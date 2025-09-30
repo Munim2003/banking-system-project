@@ -1,0 +1,111 @@
+.title{
+    -fx-font-size: 22px;
+    -fx-text-fill: #f8fafc;
+    -fx-font-family: Inter;
+}
+.sign-in{
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #FFCC33;
+    -fx-letter-spacing: 0.5px;
+}
+
+.sign-up{
+        -fx-font-size: 20px;
+        -fx-font-weight: 700;
+        -fx-text-fill: #2DA6FF;
+        -fx-letter-spacing: 1px;
+}
+
+.passwordText{
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.6);
+    -fx-control-inner-background: transparent;
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+}
+
+.loginText{
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.6);
+    -fx-control-inner-background: transparent;
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+}
+
+
+    .card {
+        -fx-background-color: linear-gradient(to bottom,#00C6FF, #003366);
+        -fx-background-radius: 18;
+        -fx-border-color: rgba(255,255,255,1.14);
+        -fx-border-radius: 18;
+        -fx-border-width: 1;
+        -fx-padding: 24;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 24, 0.2, 0, 8);
+    }
+
+.primary-btn {
+    -fx-background-color: linear-gradient(to bottom, #2DA6FF, #0066CC);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 999;   /* pill shape */
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);
+}
+
+.primary-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, #4DB8FF, #0077E6);
+}
+
+.primary-btn:pressed {
+    -fx-translate-y: 1;
+    -fx-background-color: linear-gradient(to bottom, #0066CC, #004C99);
+}
+
+
+.loginText, .passwordText{
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.6);
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-border-color: rgba(255,255,255,0.3);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.loginText, .passwordText{
+    -fx-background-color: rgba(255,255,255,0.25);
+    -fx-border-color: #2DA6FF;
+    -fx-effect: dropshadow(gaussian, rgba(45,166,255,0.4), 8, 0.2, 0, 0);
+}
+
+.form-label {
+    -fx-text-fill: rgba(255,255,255,0.8);
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+
+.login-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #FFD400; /* yellow accent */
+}
+
+.accent-link {
+    -fx-text-fill: #FFD400;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.accent-link:hover {
+    -fx-underline: true;
+    -fx-text-fill: #FFB400;
+}
+
