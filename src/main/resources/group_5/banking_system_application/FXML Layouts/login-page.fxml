@@ -12,16 +12,16 @@
             fx:controller="group_5.banking_system_application.Ui.LoginController"
             prefHeight="400.0" prefWidth="600.0"
             stylesheets="@../Styles/login-page.css"
-            style="-fx-background-color: linear-gradient(to bottom, #0F2027, #203A43, #2C5364)">
+            style="-fx-background-color: linear-gradient(to bottom, #0F0821, #2B0B3A)">
 <!--            style="-fx-background-color: black;">-->
 
     <VBox spacing="4" alignment="TOP_CENTER" maxWidth="420" maxHeight="560" styleClass="card">
         <HBox spacing="2" alignment="CENTER">
-            <ImageView fx:id="logoView1" fitWidth="100" preserveRatio="true">
-                <Image url="@../images/Vaultiq Logo.png"/>
-            </ImageView>
-            <ImageView fx:id="logoView2" fitWidth="160" preserveRatio="true" translateX="-40">
-                <Image url="@../images/Vaultiq.png"/>
+<!--            <ImageView fx:id="logoView1" fitWidth="100" preserveRatio="true">-->
+<!--                <Image url="@../images/Vaultiq Logo.png"/>-->
+<!--            </ImageView>-->
+            <ImageView fx:id="logoView2" fitWidth="160" preserveRatio="true" translateX="-5">
+                <Image url="@../images/Re-Logo.png"/>
             </ImageView>
         </HBox>
 
