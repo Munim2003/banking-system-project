@@ -3,17 +3,16 @@
     -fx-text-fill: #f8fafc;
     -fx-font-family: Inter;
 }
-.sign-in{
+.sign-in {
     -fx-font-size: 22px;
     -fx-font-weight: 700;
-    -fx-text-fill: #FFCC33;
-    -fx-letter-spacing: 0.5px;
+    -fx-text-fill: linear-gradient(to right, #9F67FF, #7C3AED);
 }
 
 .sign-up{
         -fx-font-size: 20px;
         -fx-font-weight: 700;
-        -fx-text-fill: #2DA6FF;
+        -fx-text-fill: #9F67FF;
         -fx-letter-spacing: 1px;
 }
 
@@ -37,7 +36,7 @@
 
 
     .card {
-        -fx-background-color: linear-gradient(to bottom,#00C6FF, #003366);
+        -fx-background-color: linear-gradient(to bottom,#2B0B3A, #0F0821);
         -fx-background-radius: 18;
         -fx-border-color: rgba(255,255,255,1.14);
         -fx-border-radius: 18;
@@ -47,7 +46,7 @@
     }
 
 .primary-btn {
-    -fx-background-color: linear-gradient(to bottom, #2DA6FF, #0066CC);
+    -fx-background-color: linear-gradient(to bottom, #7C3AED, #5B21B6);
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
@@ -58,12 +57,12 @@
 }
 
 .primary-btn:hover {
-    -fx-background-color: linear-gradient(to bottom, #4DB8FF, #0077E6);
+    -fx-background-color: linear-gradient(to bottom, #9F67FF, #7C3AED);
 }
 
 .primary-btn:pressed {
     -fx-translate-y: 1;
-    -fx-background-color: linear-gradient(to bottom, #0066CC, #004C99);
+    -fx-background-color: linear-gradient(to bottom, #5B21B6, #3B0B64);
 }
 
 
@@ -98,7 +97,7 @@
 }
 
 .accent-link {
-    -fx-text-fill: #FFD400;
+    -fx-text-fill: #C084FC;
     -fx-font-size: 13px;
     -fx-font-weight: 600;
     -fx-cursor: hand;
@@ -106,6 +105,19 @@
 
 .accent-link:hover {
     -fx-underline: true;
-    -fx-text-fill: #FFB400;
+    -fx-text-fill: #A855F7;
+}
+
+.loginText:focused, .passwordText:focused {
+    -fx-border-color: #7C3AED;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.45), 8, 0.2, 0, 0);
+}
+
+.title, .login-title {
+    -fx-text-fill: #EDE9FE;
+}
+
+#logoView1, #logoView2 {
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.35), 10, 0.3, 0, 0);
 }
 
