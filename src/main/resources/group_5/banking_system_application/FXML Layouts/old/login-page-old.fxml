@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="group_5.banking_system_application.Ui.LoginController"
+            prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@../Styles/login-page.css"
+            style="-fx-background-color: linear-gradient(to bottom, #0F0821, #2B0B3A)">
+<!--            style="-fx-background-color: black;">-->
+
+    <VBox spacing="4" alignment="TOP_CENTER" maxWidth="420" maxHeight="560" styleClass="card">
+        <HBox spacing="2" alignment="CENTER">
+<!--            <ImageView fx:id="logoView1" fitWidth="100" preserveRatio="true">-->
+<!--                <Image url="@../images/Vaultiq Logo.png"/>-->
+<!--            </ImageView>-->
+            <ImageView fx:id="logoView2" fitWidth="160" preserveRatio="true" translateX="-5">
+                <Image url="@../images/Re-Logo.png"/>
+            </ImageView>
+        </HBox>
+
+        <Label text="Log-In:" styleClass="sign-in" translateY="-10"/>
+        <VBox spacing="20" maxWidth="360" alignment="CENTER">
+            <HBox spacing = "30" alignment="CENTER" translateX="-7">
+                <Label text="Email:" styleClass="form-label"/>
+                <TextField fx:id="emailField" promptText="you@example.com" styleClass="loginText"/>
+            </HBox>
+            <HBox spacing = "8" alignment="CENTER" translateX="-7">
+                <Label text="Password:" styleClass="form-label" />
+                <PasswordField fx:id="passwordField" promptText="***********" styleClass="passwordText"/>
+            </HBox>
+            <Button alignment="CENTER" styleClass="primary-btn">Login</Button>
+
+        </VBox>
+        <Pane VBox.vgrow="ALWAYS"/>
+        <Hyperlink fx:id="createAccountLink" text="Create an Account" styleClass="accent-link"/>
+    </VBox>
+</StackPane>
