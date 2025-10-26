@@ -2,6 +2,8 @@ module group_5.banking_system_application {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
+    requires javafx.graphics;
+    requires javafx.base;
 
 
     opens group_5.banking_system_application to javafx.fxml;
