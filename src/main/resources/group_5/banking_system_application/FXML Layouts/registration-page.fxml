@@ -30,6 +30,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="glow" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -42,11 +43,13 @@
             <TextField fx:id="tfLast" promptText="Smith" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="tfEmail" promptText="you@example.com" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <PasswordField fx:id="pfPassword" promptText="***********" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <PasswordField fx:id="pfReenter" promptText="***********" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <Label text="First Name:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
             <Label text="Last Name:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
             <Label alignment="CENTER" text="Email:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
             <Label alignment="CENTER_RIGHT" text="Password:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-            <Button fx:id="bRegister" mnemonicParsing="false" text="Register" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <Label text="Re-enter Password:   " GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <Button fx:id="bRegister" mnemonicParsing="false" text="Register" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
    </children>
