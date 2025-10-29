@@ -28,8 +28,9 @@ public class LoginController {
     private Hyperlink hlCreate;
     @FXML
     public void initialize() {
-        ErrorDialog.initialize(loginButton);
+        NotificationDialog.initialize(loginButton);
     }
+
 
     public void handleRegisterLink(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FXML Layouts/registration-page.fxml"));
@@ -50,11 +51,13 @@ public class LoginController {
             Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
             stage.setScene(scene);
+
             stage.show();
+            NotificationDialog.showWithAnchor(root,"Success!","Login Successful !", true);
         }
         else{
-            ErrorDialog.show("Invalid Email or Password");
-            System.out.println("Invalid Email or Password");
+            NotificationDialog.show("Sorry","Invalid Email or Password", false);
+            NotificationDialog.shake(loginButton);
         }
 
     }
