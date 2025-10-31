@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group_5.banking_system_application.Ui.DashboardController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" prefWidth="0.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="500.0" />
@@ -38,7 +38,7 @@
             <Label styleClass="title" text="Dashboard" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Button fx:id="bAccounts" mnemonicParsing="false" text="Accounts" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <Button fx:id="bOpen" mnemonicParsing="false" text="Open Checking Accounts" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-            <Button fx:id="bSignout" mnemonicParsing="false" text="Sign Out" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <Button fx:id="bSignout" mnemonicParsing="false" text="Sign Out" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" onAction="#handleSignOut"/>
          </children>
       </GridPane>
    </children>
