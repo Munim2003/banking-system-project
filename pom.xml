@@ -38,6 +38,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -61,7 +66,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                group_5.banking_system_application/group_5.banking_system_application.HelloApplication
+                                group_5.banking_system_application/group_5.banking_system_application.Application
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

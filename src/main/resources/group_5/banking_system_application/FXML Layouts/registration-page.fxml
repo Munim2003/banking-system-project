@@ -4,7 +4,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="group_5.banking_system_application.Ui.RegistrationController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" prefWidth="0.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="500.0" />
@@ -49,7 +50,7 @@
             <Label alignment="CENTER" text="Email:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
             <Label alignment="CENTER_RIGHT" text="Password:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
             <Label text="Re-enter Password:   " GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-            <Button fx:id="bRegister" mnemonicParsing="false" text="Register" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
+            <Button fx:id="bRegister" mnemonicParsing="false" text="Register" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" onAction="#handleRegistration"/>
          </children>
       </GridPane>
    </children>
