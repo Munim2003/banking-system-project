@@ -11,6 +11,7 @@ module group_5.banking_system_application {
     requires google.cloud.firestore;
     requires google.cloud.core;
     requires com.google.api.apicommon;
+    requires jbcrypt;
 
 
     opens group_5.banking_system_application to javafx.fxml;

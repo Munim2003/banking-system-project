@@ -82,3 +82,15 @@
 .glow {
     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.35), 10, 0.3, 0, 0);
 }
+
+  .back-button {
+      -fx-background-color: transparent;
+      -fx-text-fill: #B8B9C2;
+      -fx-font-size: 13px;
+      -fx-cursor: hand;
+      -fx-padding: 4 6;
+  }
+
+  .back-button:hover {
+      -fx-text-fill: white;
+  }

@@ -20,9 +20,12 @@ public class FirestoreContext {
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setProjectId("vaultiq-banking-system")
                     .build();
 
-            FirebaseApp.initializeApp(options);
+            if(FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+            }
 
         } catch (IOException ex) {
             ex.printStackTrace();

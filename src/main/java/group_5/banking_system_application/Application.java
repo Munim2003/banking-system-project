@@ -17,7 +17,7 @@ public class Application extends javafx.application.Application {
         FirestoreContext ctx = new FirestoreContext();
         firestore = ctx.firebase();          // this initializes FirebaseApp internally
         auth = FirebaseAuth.getInstance();
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("/group_5/banking_system_application/FXML Layouts/login-page.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("/group_5/banking_system_application/FXML Layouts/dashboard-page.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 600);
         stage.setTitle("Login or Sign Up");
         stage.setScene(scene);
