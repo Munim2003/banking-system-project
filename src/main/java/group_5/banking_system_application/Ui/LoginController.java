@@ -4,7 +4,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
-import group_5.banking_system_application.FirestoreContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +39,7 @@ public class LoginController {
 
 
     public void handleRegisterLink(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FXML Layouts/registration-page.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FxmlLayouts/registration-page.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         double width = stage.getWidth();
         double height = stage.getHeight();
@@ -87,7 +86,7 @@ public class LoginController {
 
         String storedPassword = (String) document.get("hashedPassword");
         if(PasswordAuthUtil.checkPassword(password,storedPassword)) {
-            Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FXML Layouts/dashboard-page.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FxmlLayouts/main-page.fxml"));
             Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
             stage.setScene(scene);

@@ -3,21 +3,26 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
+<?import javafx.geometry.Insets?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="group_5.banking_system_application.Ui.DashboardController"
+
            stylesheets="@../Styles/style.css"
-           style="-fx-padding:40;"
-            styleClass="outback">
+           style="-fx-padding:60;"
+
+           styleClass="outback">
 
     <!-- Big Card -->
-    <HBox styleClass="inback-for-dashboard-panel" spacing="0">
+    <HBox styleClass="inback-for-dashboard-panel" maxWidth="1000" prefWidth="1000" spacing="0">
 
         <!-- LEFT NAVBAR -->
         <fx:include source="navbar.fxml" />
 
         <!-- RIGHT CONTENT (auto expands) -->
         <StackPane HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
             <fx:include source="dashboard-page.fxml" />
         </StackPane>
 
