@@ -7,17 +7,17 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="group_5.banking_system_application.Ui.DashboardController"
            stylesheets="@../Styles/style.css"
-           style="-fx-padding:30;"
+           style="-fx-padding:40;"
             styleClass="outback">
 
     <!-- Big Card -->
-    <HBox styleClass="inback" spacing="-NaN">
+    <HBox styleClass="inback-for-dashboard-panel" spacing="0">
 
         <!-- LEFT NAVBAR -->
         <fx:include source="navbar.fxml" />
 
         <!-- RIGHT CONTENT (auto expands) -->
-        <StackPane HBox.hgrow="ALWAYS" style="-fx-padding:20;">
+        <StackPane HBox.hgrow="ALWAYS">
             <fx:include source="dashboard-page.fxml" />
         </StackPane>
 

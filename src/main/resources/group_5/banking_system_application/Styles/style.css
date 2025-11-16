@@ -68,8 +68,22 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 24, 0.2, 0, 8);
 }
 
+.inback-for-dashboard-panel{
+    -fx-background-color: linear-gradient(to bottom,#2B0B3A, #150421);
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(255,255,255,1.14);
+    -fx-border-radius: 18;
+    -fx-border-width: 1;
+    -fx-border-insets: 0;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 24, 0.2, 0, 8);
+
+    -fx-padding: 0;
+}
+
 .outback {
     -fx-background-color: linear-gradient(to bottom, #0F0821, #2B0B3A);
+    -fx-padding: 0;
 }
 
 
@@ -107,7 +121,12 @@
   /* Navbar main container */
   .navbar {
       -fx-padding: 25 20 20 25;
-      -fx-background-color: transparent;
+      -fx-background-radius: 18;
+      /*-fx-background-color: transparent;*/
+      -fx-background-color: linear-gradient(to bottom, #0F0821, #2B0B3A);
+      -fx-border-insets: 0;
+      -fx-background-insets: 0;
+
   }
 
   /* LOGO ROW */
