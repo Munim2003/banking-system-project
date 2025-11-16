@@ -59,7 +59,7 @@
 
 
 .inback {
-    -fx-background-color: linear-gradient(to bottom,#2B0B3A, #0F0821);
+    -fx-background-color: linear-gradient(to bottom,#2B0B3A, #150421);
     -fx-background-radius: 18;
     -fx-border-color: rgba(255,255,255,1.14);
     -fx-border-radius: 18;
@@ -94,3 +94,62 @@
   .back-button:hover {
       -fx-text-fill: white;
   }
+
+  .dashboard-container{
+
+      -fx-background-color: linear-gradient(to bottom, #1C1430, #2B0B3A);
+      -fx-background-radius: 20;
+      -fx-border-color: rgba(255,255,255,0.1);
+      -fx-border-radius: 20;
+      -fx-padding: 20;
+  }
+
+  /* Navbar main container */
+  .navbar {
+      -fx-padding: 25 20 20 25;
+      -fx-background-color: transparent;
+  }
+
+  /* LOGO ROW */
+  .nav-logo-container {
+      -fx-padding: 10 0 15 0;
+  }
+  .nav-logo-text {
+      -fx-text-fill: #e1d7ff;
+      -fx-font-size: 22px;
+      -fx-font-weight: bold;
+  }
+
+  /* NAV BUTTON STYLE */
+  .nav-item {
+      -fx-background-color: transparent;
+      -fx-text-fill: #cfc3ff;
+      -fx-font-size: 16px;
+      -fx-alignment: CENTER_LEFT;
+      -fx-padding: 10 15;
+      -fx-background-radius: 10;
+      -fx-cursor: hand;
+  }
+
+  /* Hover effect */
+  .nav-item:hover {
+      -fx-background-color: rgba(150, 90, 255, 0.25);
+  }
+
+  /* Active state */
+  .nav-item-active {
+      -fx-background-color: rgba(150, 90, 255, 0.55);
+      -fx-text-fill: #ffffff;
+  }
+
+  .nav-item .text {
+      -fx-fill: #cfc3ff;     /* text color */
+      -fx-font-size: 16px;   /* matches your button font size */
+      -fx-font-weight: normal;
+  }
+
+  /* Hover text color */
+  .nav-item:hover .text {
+      -fx-fill: #ffffff;
+  }
+

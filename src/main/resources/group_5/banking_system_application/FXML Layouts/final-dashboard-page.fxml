@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="group_5.banking_system_application.Ui.DashboardController"
+           stylesheets="@../Styles/style.css"
+           style="-fx-padding:30;"
+            styleClass="outback">
+
+    <!-- Big Card -->
+    <HBox styleClass="inback" spacing="-NaN">
+
+        <!-- LEFT NAVBAR -->
+        <fx:include source="navbar.fxml" />
+
+        <!-- RIGHT CONTENT (auto expands) -->
+        <StackPane HBox.hgrow="ALWAYS" style="-fx-padding:20;">
+            <fx:include source="dashboard-page.fxml" />
+        </StackPane>
+
+    </HBox>
+
+</StackPane>
