@@ -5,6 +5,14 @@ module group_5.banking_system_application {
     requires javafx.graphics;
     requires javafx.base;
 
+    requires firebase.admin;
+    requires com.google.auth;
+    requires com.google.auth.oauth2;
+    requires google.cloud.firestore;
+    requires google.cloud.core;
+    requires com.google.api.apicommon;
+    requires jbcrypt;
+
 
     opens group_5.banking_system_application to javafx.fxml;
     exports group_5.banking_system_application;
