@@ -86,10 +86,15 @@ public class LoginController {
 
         String storedPassword = (String) document.get("hashedPassword");
         if(PasswordAuthUtil.checkPassword(password,storedPassword)) {
-            Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FxmlLayouts/main-page.fxml"));
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
-            stage.setScene(scene);
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/group_5/banking_system_application/FxmlLayouts/main-page.fxml")
+            );
+
+            Scene scene = ((Node) event.getSource()).getScene();
+            scene.setRoot(root);
+
+            Stage stage = (Stage) scene.getWindow();
+            stage.setTitle("Vaultiq Dashboard");
 
             stage.show();
             NotificationDialog.showWithAnchor(root,"Success!","Login Successful !", true);

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="group_5.banking_system_application.Ui.TransactionsController"
+            prefHeight="400.0" prefWidth="600.0" spacing="20">
+    <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="6">
+                <Label text="Transaction History" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
+                <Label text="Review and filter your recent transactions" styleClass="card-subtitle"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <ComboBox styleClass="combo-box" promptText="Select an Option"></ComboBox>
+
+    </HBox>
+    <HBox spacing="40">
+        <VBox styleClass="card" prefWidth="230" spacing="6">
+            <Label text="This Month Spent" styleClass="card-title"/>
+            <Label text="\$2,340.12" styleClass="card-value"/>
+            <Label text="+3.2% vs last month" styleClass="card-subtitle"/>
+        </VBox>
+        <VBox styleClass="card" prefWidth="230" spacing="6">
+            <Label text="This Month Spent" styleClass="card-title"/>
+            <Label text="\$2,340.12" styleClass="card-value"/>
+            <Label text="+3.2% vs last month" styleClass="card-subtitle"/>
+        </VBox>
+    </HBox>
+
+    <TableView fx:id="transactionsTable" VBox.vgrow="ALWAYS" fixedCellSize="40" styleClass="table-card">
+        <columns>
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="110"/>
+            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="260"/>
+            <TableColumn fx:id="amountColumn" text="Amount" prefWidth="110"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="110"/>
+            <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="110"/>
+        </columns>
+
+    </TableView>
+
+</VBox>

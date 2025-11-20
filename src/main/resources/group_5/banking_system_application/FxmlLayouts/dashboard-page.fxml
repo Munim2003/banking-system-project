@@ -11,7 +11,7 @@
             fx:controller="group_5.banking_system_application.Ui.DashboardController"
             prefHeight="400.0" prefWidth="600.0" spacing="20">
     <HBox alignment="CENTER_LEFT" spacing="20">
-        <Label text="Welcome back, <User>" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
+        <Label text="Welcome back, Munim" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
     </HBox>
     <HBox spacing="18">
             <VBox styleClass="card" spacing="6" prefWidth="230">

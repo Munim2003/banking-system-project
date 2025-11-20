@@ -11,10 +11,9 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="group_5.banking_system_application.Ui.NavbarController"
-      prefHeight="400.0" prefWidth="200.0" maxWidth="200.0"
-      styleClass="navbar" stylesheets="@../Styles/style.css"
-      spacing="15"
-      alignment="TOP_LEFT">
+      maxHeight="Infinity" prefWidth="200.0" maxWidth="200.0"
+      styleClass="navbar"
+      spacing="15">
 
     <HBox alignment="CENTER_LEFT" spacing="25">
         <ImageView fitHeight="150" fitWidth="150" preserveRatio="true">
@@ -24,7 +23,7 @@
         </ImageView>
     </HBox>
 
-    <Button fx:id="bthHome" styleClass="nav-item">
+    <Button fx:id="bthHome" styleClass="nav-item" onAction="#openDashboard">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
@@ -46,7 +45,7 @@
         Account
     </Button>
 
-    <Button fx:id="btnTransactions" styleClass="nav-item">
+    <Button fx:id="btnTransactions" styleClass="nav-item" onAction="#openTransactions">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
