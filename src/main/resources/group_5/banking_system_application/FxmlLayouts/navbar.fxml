@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="group_5.banking_system_application.Ui.NavbarController"
+      maxHeight="Infinity" prefWidth="200.0" maxWidth="200.0"
+      styleClass="navbar"
+      spacing="15" VBox.vgrow="ALWAYS" >
+
+    <HBox alignment="CENTER_LEFT" spacing="25">
+        <ImageView fitHeight="150" fitWidth="150" preserveRatio="true">
+            <image>
+                <Image url ="@../images/VaultiqFinalLogo.png"></Image>
+            </image>
+        </ImageView>
+    </HBox>
+
+    <Button fx:id="btnHome" styleClass="nav-item" onAction="#openDashboard">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                <image>
+                    <Image url ="@../images/home_icon.png"></Image>
+                </image>
+            </ImageView>
+        </graphic>
+        Home
+    </Button>
+
+    <Button fx:id="btnAccount" styleClass="nav-item">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                <image>
+                    <Image url = "@../images/accounts_icon.png"></Image>
+                </image>
+            </ImageView>
+        </graphic>
+        Account
+    </Button>
+
+    <Button fx:id="btnTransactions" styleClass="nav-item" onAction="#openTransactions">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                <image>
+                    <Image url = "@../images/transactions_icon.png"></Image>
+                </image>
+            </ImageView>
+        </graphic>
+        Transactions
+    </Button>
+
+    <Button fx:id="btnAnalytics" styleClass="nav-item">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                <image>
+                    <Image url = "@../images/analytics_icon.png"></Image>
+                </image>
+            </ImageView>
+        </graphic>
+        Analytics
+    </Button>
+
+    <Button fx:id="btnBeneficiaries" styleClass="nav-item" onAction="#openBeneficiaries">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                <image>
+                    <Image url = "@../images/Beneficiary_icon.png"></Image>
+                </image>
+            </ImageView>
+        </graphic>
+        Beneficiaries
+    </Button>
+
+</VBox>

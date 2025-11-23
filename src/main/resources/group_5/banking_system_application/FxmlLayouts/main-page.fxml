@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<?import javafx.geometry.Insets?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           styleClass="outback"
+           fx:controller="group_5.banking_system_application.Ui.MainPageController"
+           style="-fx-padding:60;">
+
+    <!-- Big Card -->
+    <HBox styleClass="inback-for-dashboard-panel" maxWidth="1000" prefWidth="1000">
+
+<!--         LEFT NAVBAR-->
+        <VBox fx:id="navbarHost"
+              prefWidth="200.0"
+              maxWidth="200.0"/>
+
+
+        <!-- RIGHT CONTENT (auto expands) -->
+        <StackPane HBox.hgrow="ALWAYS" fx:id="contentComponent">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+        </StackPane>
+
+    </HBox>
+
+</StackPane>
+

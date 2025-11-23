@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="group_5.banking_system_application.Ui.RegistrationController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" prefWidth="0.0" />

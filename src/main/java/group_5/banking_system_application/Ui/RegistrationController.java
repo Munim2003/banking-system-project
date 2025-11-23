@@ -42,9 +42,12 @@ public class RegistrationController {
 
     @FXML
     public void handleBackToLogin(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FXML Layouts/login-page.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/group_5/banking_system_application/FxmlLayouts/login-page.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+        String css = getClass().getResource("/group_5/banking_system_application/Styles/style.css").toExternalForm();
+            scene.getStylesheets().add(css);
+            stage.setScene(scene);
         stage.show();
     }
 

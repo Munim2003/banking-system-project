@@ -198,7 +198,7 @@ public final class NotificationDialog {
 
             // Close action - restore old root
             Runnable closeAction = () -> {
-                closeDialog(overlayRoot, card, () -> scene.setRoot(oldRoot));
+                closeDialog(overlayRoot, card, () -> {container.getChildren().remove(oldRoot); scene.setRoot(oldRoot);});
             };
 
             okButton.setOnAction(e -> closeAction.run());
