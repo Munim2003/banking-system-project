@@ -13,6 +13,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -29,6 +30,9 @@ public class DashboardController {
     private StackPane growthChart;
 
     @FXML
+    private VBox root;
+
+    @FXML
     public void initialize() {
         LineChart<String, Number> chart = createGrowthChart();
 
@@ -37,6 +41,9 @@ public class DashboardController {
         chart.prefHeightProperty().bind(growthChart.heightProperty());
 
         growthChart.getChildren().add(chart);
+
+        NotificationDialog.initialize(root);
+        AddBeneficiaryDialog.initialize(root);
 
     }
 
@@ -70,5 +77,21 @@ public class DashboardController {
         chart.getData().add(data);
         return chart;
     }
+
+    private String currentUserId; // login ke baad set hota hai
+
+    public void setCurrentUserId(String userId) {
+        this.currentUserId = userId;
+    }
+
+    @FXML
+    private void onAddBeneficiaryClicked() {
+        AddBeneficiaryDialog.show(currentUserId, this::reloadBeneficiariesOnDashboard);
+    }
+
+    private void reloadBeneficiariesOnDashboard() {
+        // Firestore se beneficiaries list fetch karo aur dashboard pe show/update karo
+    }
+
 
 }

@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="login-root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group_5.banking_system_application.Ui.LoginController">
+<GridPane alignment="CENTER" prefHeight="600.0" prefWidth="600.0" styleClass="outback" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group_5.banking_system_application.Ui.LoginController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" prefWidth="0.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="500.0" />

@@ -4,6 +4,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
+import group_5.banking_system_application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,8 +44,8 @@ public class LoginController {
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         double width = stage.getWidth();
         double height = stage.getHeight();
-        Scene scene = new Scene(root,width,height);
-        stage.setScene(scene);
+        Scene scene = ((Node) event.getSource()).getScene();
+        scene.setRoot(root);
         stage.show();
     }
 
@@ -92,6 +93,12 @@ public class LoginController {
 
             Scene scene = ((Node) event.getSource()).getScene();
             scene.setRoot(root);
+
+            scene.getStylesheets().setAll(
+                    Application.class
+                            .getResource("/group_5/banking_system_application/Styles/style.css")
+                            .toExternalForm()
+            );
 
             Stage stage = (Stage) scene.getWindow();
             stage.setTitle("Vaultiq Dashboard");

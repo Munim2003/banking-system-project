@@ -6,19 +6,63 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="group_5.banking_system_application.Ui.TransactionsController"
-            prefHeight="400.0" prefWidth="600.0" spacing="20">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="group_5.banking_system_application.Ui.TransactionsController"
+      prefHeight="400.0" prefWidth="600.0" spacing="20">
     <HBox alignment="CENTER_LEFT" spacing="20">
-            <VBox spacing="6">
-                <Label text="Transaction History" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
-                <Label text="Review and filter your recent transactions" styleClass="card-subtitle"/>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS"/>
-            <ComboBox styleClass="combo-box" promptText="Select an Option"></ComboBox>
 
+        <!-- Left: Titles -->
+        <VBox spacing="6">
+            <Label text="Transaction History"
+                   style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
+            <Label text="Review and filter your recent transactions" styleClass="card-subtitle"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Right: Filter + Search -->
+        <HBox spacing="18" alignment="CENTER_RIGHT">
+
+            <!-- Filter (Dropdown) -->
+            <VBox spacing="4" alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" spacing="6">
+                    <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                        <image>
+                            <!-- replace when icon ready -->
+                            <Image url="@../images/filter-icon.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Filter" styleClass="control-label"/>
+                </HBox>
+                <ComboBox fx:id="comboBox"
+                          promptText="Select an Option"
+                          prefWidth="140"
+                          styleClass="top-combo"/>
+            </VBox>
+
+            <!-- Search Field -->
+            <VBox spacing="4" alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" spacing="6">
+                    <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                        <image>
+                            <!-- replace when icon ready -->
+                            <Image url="@../images/search-icon.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Search" styleClass="control-label"/>
+                </HBox>
+                <TextField fx:id="searchField"
+                           promptText="Search transactions…"
+                           prefWidth="180"
+                           styleClass="search-field"/>
+            </VBox>
+
+        </HBox>
     </HBox>
+
     <HBox spacing="40">
         <VBox styleClass="card" prefWidth="230" spacing="6">
             <Label text="This Month Spent" styleClass="card-title"/>

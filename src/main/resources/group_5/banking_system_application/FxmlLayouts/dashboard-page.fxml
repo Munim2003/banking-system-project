@@ -9,27 +9,31 @@
 <VBox xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="group_5.banking_system_application.Ui.DashboardController"
-            prefHeight="400.0" prefWidth="600.0" spacing="20">
+            prefHeight="400.0" prefWidth="600.0" spacing="20"
+      fx:id="root">
     <HBox alignment="CENTER_LEFT" spacing="20">
         <Label text="Welcome back, Munim" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
+<!--        />-->
     </HBox>
     <HBox spacing="18">
-            <VBox styleClass="card" spacing="6" prefWidth="230">
+            <VBox styleClass="card" spacing="6" prefWidth="230" style="-fx-text-fill: #66FF66; -fx-font-size: 14px;">
                 <Label text="Total Balance" styleClass="card-title"/>
                 <Label text="\$18,920.52" styleClass="card-value"/>
-                <Label text="+3.4% this week" style="-fx-text-fill: #66FF66; -fx-font-size: 14px;"/>
+                <Label text="+3.4% this week"/>
+<!--                />-->
             </VBox>
-        <VBox styleClass="card" spacing="6" prefWidth="230">
+        <VBox styleClass="card" spacing="6" prefWidth="230" style="-fx-text-fill: #F97373; -fx-font-size: 14px;">
             <Label text="Monthly Spending" styleClass="card-title"/>
             <Label text="\$3,202.14" styleClass="card-value"/>
-            <Label text="- 1.1% vs last month"
-                   style="-fx-text-fill: #F97373; -fx-font-size: 14px;"/>
+            <Label text="- 1.1% vs last month"/>
+<!--                   />-->
         </VBox>
-        <VBox styleClass="card" spacing="6">
+        <VBox styleClass="card" spacing="6" style="-fx-font-size: 14px;">
             <Label text="Active Accounts" styleClass="card-title"/>
             <Label text="1" styleClass="card-value"/>
             <Label text="1 checking • 0 savings"
-                   style="-fx-font-size: 14px;"/>
+                   />
+
         </VBox>
     </HBox>
 
@@ -46,12 +50,12 @@
 
         <VBox styleClass="card" spacing="12" prefHeight="220"
               prefWidth="260"
-              alignment="TOP_CENTER"
-              style="-fx-padding: 18 22 22 22">
+              alignment="TOP_CENTER" style="-fx-padding: 18 22 22 22">
+
             <Label text="Quick Actions" styleClass="card-title"/>
             <Button text="Transfer funds" styleClass="primary-btn"/>
             <Button text="View Statements" styleClass="secondary-btn"/>
-            <Button text="Add Beneficiary" styleClass="secondary-btn"/>
+            <Button text="Add Beneficiary" styleClass="secondary-btn" onAction="#onAddBeneficiaryClicked"/>
         </VBox>
     </HBox>
 
