@@ -75,7 +75,7 @@ public final class NotificationDialog {
             double width = stage.getWidth();
             double height = stage.getHeight();
 
-            System.out.println("Window dimensions: " + width + " x " + height);
+        //    System.out.println("Window dimensions: " + width + " x " + height);
 
             // Create overlay
             StackPane overlayRoot = new StackPane();
