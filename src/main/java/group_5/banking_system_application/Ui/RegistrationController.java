@@ -76,11 +76,13 @@ public class RegistrationController {
 //        btnRegister.setDisable(true); // to avoid double clicking
 
         new Thread(() -> {
-            UserRecord.CreateRequest request = new UserRecord.CreateRequest()
-                    .setEmail(tfEmail.getText())
-                    .setPassword(pfPassword.getText())
-                    .setEmailVerified(false)
-                    .setDisplayName(tfFirst.getText() + " " + tfLast.getText());
+
+            try {
+                UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                        .setEmail(tfEmail.getText())
+                        .setPassword(pfPassword.getText())
+                        .setEmailVerified(false)
+                        .setDisplayName(tfFirst.getText() + " " + tfLast.getText());
 
             try {
                 UserRecord userRecord = Application.auth.createUser(request);
@@ -116,6 +118,9 @@ public class RegistrationController {
                     btnRegister.setDisable(false);
                     NotificationDialog.show("Failed", e.getMessage(), false);
                 });
+            }
+            } catch(IllegalArgumentException illArg) {
+            // really to remove printing of exceptions
             }
 
         }).start();
