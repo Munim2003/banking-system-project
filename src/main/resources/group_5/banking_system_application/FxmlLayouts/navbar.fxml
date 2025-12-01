@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="group_5.banking_system_application.Ui.NavbarController"
-      maxHeight="Infinity" prefWidth="200.0" maxWidth="200.0"
-      styleClass="navbar"
-      spacing="15" VBox.vgrow="ALWAYS" >
+<VBox maxHeight="Infinity" maxWidth="200.0" prefWidth="200.0" spacing="15" styleClass="navbar" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group_5.banking_system_application.Ui.NavbarController">
 
     <HBox alignment="CENTER_LEFT" spacing="25">
         <ImageView fitHeight="150" fitWidth="150" preserveRatio="true">
             <image>
-                <Image url ="@../images/VaultiqFinalLogo.png"></Image>
+                <Image url="@../images/VaultiqFinalLogo.png" />
             </image>
         </ImageView>
     </HBox>
 
-    <Button fx:id="btnHome" styleClass="nav-item" onAction="#openDashboard">
+    <Button fx:id="btnHome" onAction="#openDashboard" styleClass="nav-item">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
-                    <Image url ="@../images/home_icon.png"></Image>
+                    <Image url="@../images/home_icon.png" />
                 </image>
             </ImageView>
         </graphic>
@@ -38,40 +29,40 @@
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
-                    <Image url = "@../images/accounts_icon.png"></Image>
+                    <Image url="@../images/accounts_icon.png" />
                 </image>
             </ImageView>
         </graphic>
         Account
     </Button>
 
-    <Button fx:id="btnTransactions" styleClass="nav-item" onAction="#openTransactions">
+    <Button fx:id="btnTransactions" onAction="#openTransactions" styleClass="nav-item">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
-                    <Image url = "@../images/transactions_icon.png"></Image>
+                    <Image url="@../images/transactions_icon.png" />
                 </image>
             </ImageView>
         </graphic>
         Transactions
     </Button>
 
-    <Button fx:id="btnAnalytics" styleClass="nav-item">
+    <Button fx:id="btnAnalytics" onAction="#openAnalytics" styleClass="nav-item">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
-                    <Image url = "@../images/analytics_icon.png"></Image>
+                    <Image url="@../images/analytics_icon.png" />
                 </image>
             </ImageView>
         </graphic>
         Analytics
     </Button>
 
-    <Button fx:id="btnBeneficiaries" styleClass="nav-item" onAction="#openBeneficiaries">
+    <Button fx:id="btnBeneficiaries" onAction="#openBeneficiaries" styleClass="nav-item">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>
-                    <Image url = "@../images/Beneficiary_icon.png"></Image>
+                    <Image url="@../images/Beneficiary_icon.png" />
                 </image>
             </ImageView>
         </graphic>

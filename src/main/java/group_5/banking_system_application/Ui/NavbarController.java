@@ -39,6 +39,14 @@ public class NavbarController {
     }
 
     @FXML
+    public void openAnalytics(ActionEvent actionEvent) {
+        if(mainPageController != null){
+            mainPageController.setPage("/group_5/banking_system_application/FxmlLayouts/analytics-page.fxml");
+            setActiveButton(btnAnalytics);
+        }
+    }
+
+    @FXML
     public void openDashboard(ActionEvent actionEvent) {
 
         mainPageController.setPage("/group_5/banking_system_application/FxmlLayouts/dashboard-page.fxml");
