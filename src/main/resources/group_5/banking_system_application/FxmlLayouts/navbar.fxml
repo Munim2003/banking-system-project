@@ -25,7 +25,7 @@
         Home
     </Button>
 
-    <Button fx:id="btnAccount" styleClass="nav-item">
+    <Button fx:id="btnAccount" onAction="#openAccounts" styleClass="nav-item">
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                 <image>

@@ -55,7 +55,8 @@ public class NavbarController {
 
     @FXML
     public void openAccounts(ActionEvent actionEvent) {
-
+        mainPageController.setPage("/group_5/banking_system_application/FxmlLayouts/accounts-page.fxml");
+        setActiveButton(btnAccount);
     }
 
     @FXML void openBeneficiaries(ActionEvent actionEvent) {
