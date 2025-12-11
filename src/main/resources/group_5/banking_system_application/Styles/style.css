@@ -423,7 +423,7 @@
 
   .combo-box .list-cell {
       -fx-text-fill: white;
-      -fx-background-color: #2a0f45;
+      -fx-background-color: transparent;
   }
 
   .combo-box .list-cell:hover {

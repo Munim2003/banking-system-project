@@ -39,7 +39,7 @@
                 </HBox>
                 <ComboBox fx:id="comboBox"
                           promptText="Select an Option"
-                          prefWidth="140"
+                          prefWidth="200"
                           styleClass="top-combo"/>
             </VBox>
 
