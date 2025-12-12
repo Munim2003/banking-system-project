@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class LoginController {
     // dirty fix to wrong name being displayed
     public static String userName = "Munim";
+    public static String globalUserEmail;
     public Button loginButton;
     @FXML
     private TextField emailField;
@@ -91,6 +92,7 @@ public class LoginController {
         //gets name
         String storedName = (String) document.get("firstName");
         if(PasswordAuthUtil.checkPassword(password,storedPassword)) {
+            globalUserEmail = email;
             LoginController.userName = storedName;
             Parent root = FXMLLoader.load(
                     getClass().getResource("/group_5/banking_system_application/FxmlLayouts/main-page.fxml")
