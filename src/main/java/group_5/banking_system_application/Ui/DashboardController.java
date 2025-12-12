@@ -11,10 +11,13 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.commons.logging.Log;
 
 import java.io.IOException;
 
@@ -34,6 +37,19 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
+        for(var c1: root.getChildren()) {
+            if(c1 instanceof HBox) {
+                for (var c2: ((HBox) c1).getChildren()) {
+                    if(c2 instanceof  Label) {
+                        if(((Label)c2).getText().equals("Welcome back, Munim")) {
+                            ((Label)c2).setText("Welcome back, " + LoginController.userName);
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
         LineChart<String, Number> chart = createGrowthChart();
 
         chart.setMinSize(0, 0);

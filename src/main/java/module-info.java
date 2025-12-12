@@ -12,6 +12,7 @@ module group_5.banking_system_application {
     requires google.cloud.core;
     requires com.google.api.apicommon;
     requires jbcrypt;
+    requires commons.logging;
 
 
     opens group_5.banking_system_application to javafx.fxml;
