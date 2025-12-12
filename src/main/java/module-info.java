@@ -13,6 +13,7 @@ module group_5.banking_system_application {
     requires com.google.api.apicommon;
     requires jbcrypt;
     requires commons.logging;
+    requires org.threeten.bp;
 
 
     opens group_5.banking_system_application to javafx.fxml;
