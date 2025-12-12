@@ -68,6 +68,7 @@ public class LoginController {
             NotificationDialog.show("Configuration Error", "Firestore not initialized", false);
             return;
         }
+
         ApiFuture<QuerySnapshot> future = db.collection("users")
                 .whereEqualTo("email", email)
                 .limit(1)

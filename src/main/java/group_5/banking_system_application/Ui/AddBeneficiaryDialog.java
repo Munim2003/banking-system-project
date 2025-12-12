@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import group_5.banking_system_application.Application;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -21,10 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.threeten.bp.LocalDateTime;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public final class AddBeneficiaryDialog {
@@ -245,8 +243,29 @@ public final class AddBeneficiaryDialog {
                 cancelBtn.setDisable(true);
                 errorLabel.setText("Checking user...");
 
-                new Thread(() -> {
+              //  new Thread(() -> {
                     try {
+                        ApiFuture<QuerySnapshot> userFuture =
+                                db.collection("users")
+                                        .whereEqualTo("email", LoginController.globalUserEmail)
+                                        .get();
+
+                        List<QueryDocumentSnapshot> userDoc = userFuture.get().getDocuments();
+                        var userQuery = userDoc.getFirst();
+                        if(userQuery.get("beneficiaries") != null) {
+                            var beneficiariesArray = (ArrayList<String>)userQuery.get("beneficiaries");
+                            for(var ben:beneficiariesArray) {
+                                if(ben.equals(email)) {
+                                    errorLabel.setText("you already added this beneficiary");
+                                    NotificationDialog.shake(emailField);
+                                    addBtn.setDisable(false);
+                                    cancelBtn.setDisable(false);
+                                    return;
+                                }
+                            }
+                        }
+
+                        //----
                         ApiFuture<QuerySnapshot> future =
                                 db.collection("users")
                                         .whereEqualTo("email", email)
@@ -264,6 +283,24 @@ public final class AddBeneficiaryDialog {
                             return;
                         }
 
+                        // new code for beneficiaries
+                        DocumentReference docRef = Application.firestore.collection("users").document((String)userQuery.get("userID"));
+                        var map = new HashMap<String, Object>();
+                        map.put("userID",userQuery.get("userID") ); // to access user more easily
+                        map.put("firstName", userQuery.get("firstName"));
+                        map.put("lastName", userQuery.get("lastName"));
+                        map.put("email", userQuery.get("email"));
+                        map.put("hashedPassword", userQuery.get("hashedPassword"));
+                        var benArray = new ArrayList<String>();
+                        if(userQuery.get("beneficiaries") != null) {
+                            for (var i : (ArrayList<String>) userQuery.get("beneficiaries")) {
+                                benArray.add(i);
+                            }
+                        }
+                        benArray.add(email);
+                        map.put("beneficiaries",benArray);
+                        docRef.set(map).get();
+                        /*
                         DocumentSnapshot beneficiaryUser = docs.get(0);
                         String beneficiaryUserId = beneficiaryUser.getId();
 
@@ -280,7 +317,7 @@ public final class AddBeneficiaryDialog {
                                 .document(beneficiaryId)
                                 .set(data)
                                 .get();
-
+                         */
                         Platform.runLater(() -> {
                            // closeAction.run();
                             if (onSuccess != null) {
@@ -302,7 +339,7 @@ public final class AddBeneficiaryDialog {
                             cancelBtn.setDisable(false);
                         });
                     }
-                }).start();
+               // }).start();
             });
 
             // ---------- entrance animation ----------

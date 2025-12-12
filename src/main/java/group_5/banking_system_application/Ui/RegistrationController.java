@@ -20,6 +20,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/*
+ATTENTION,for my beneficiaries code to work all users must have a user ID, any previously made user should
+either get an ID or be reregistered.
+
+
+
+ */
+
 public class RegistrationController {
     @FXML
     private TextField tfFirst;
@@ -95,11 +103,13 @@ public class RegistrationController {
                 }
                 DocumentReference docRef = Application.firestore.collection("users").document(userRecord.getUid());
                 Map<String, Object> map = new HashMap<>();
+                map.put("userID", userRecord.getUid()); // to access user more easily
                 map.put("firstName", tfFirst.getText());
                 map.put("lastName", tfLast.getText());
                 map.put("email", tfEmail.getText());
                 map.put("hashedPassword", PasswordAuthUtil.hashPassword(pfPassword.getText()));
                 docRef.set(map).get();
+
 
                 Platform.runLater(() -> {
 //                    btnRegister.setDisable(false);
