@@ -69,4 +69,23 @@
         Beneficiaries
     </Button>
 
+    <!-- Vertical Scrolling Ticker for Navbar -->
+    <VBox VBox.vgrow="ALWAYS" alignment="BOTTOM_CENTER" spacing="0">
+        <StackPane fx:id="navbarTickerContainer" 
+                   styleClass="navbar-ticker-container"
+                   prefHeight="90"
+                   maxHeight="90"
+                   minHeight="90"
+                   alignment="CENTER">
+            <Label fx:id="navbarTickerLabel" 
+                   styleClass="navbar-ticker-text"
+                   text="Loading suggestions..."
+                   wrapText="true"
+                   textAlignment="CENTER"
+                   alignment="CENTER"
+                   maxWidth="180"
+                   minHeight="60"/>
+        </StackPane>
+    </VBox>
+
 </VBox>

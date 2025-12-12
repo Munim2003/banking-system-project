@@ -59,5 +59,16 @@
         </VBox>
     </HBox>
 
+    <!-- Banking Suggestions Ticker -->
+    <HBox fx:id="tickerContainer" 
+          alignment="CENTER_LEFT" 
+          styleClass="ticker-container"
+          prefHeight="40"
+          maxHeight="40"
+          minHeight="40">
+        <Label fx:id="tickerLabel" 
+               styleClass="ticker-text"
+               text="Loading suggestions..."/>
+    </HBox>
 
 </VBox>
