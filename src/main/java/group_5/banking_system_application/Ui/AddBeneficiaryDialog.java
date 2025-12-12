@@ -19,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.threeten.bp.LocalDateTime;
 
 import java.util.HashMap;
 import java.util.List;
@@ -272,7 +273,8 @@ public final class AddBeneficiaryDialog {
                         data.put("beneficiaryId", beneficiaryId);
                         data.put("ownerUserId", currentUserId);       // jis user ne add kiya
                         data.put("beneficiaryUserId", beneficiaryUserId);
-                        data.put("createdAt", Timestamp.now());
+                     //   data.put("createdAt", Timestamp.now());
+                        data.put("createdAt", LocalDateTime.now());
 
                         db.collection("beneficiaries")
                                 .document(beneficiaryId)
@@ -280,11 +282,16 @@ public final class AddBeneficiaryDialog {
                                 .get();
 
                         Platform.runLater(() -> {
-                            closeAction.run();
+                           // closeAction.run();
                             if (onSuccess != null) {
                                 onSuccess.run();    // e.g. table refresh
                             }
-                            NotificationDialog.showSuccess("Beneficiary added successfully.");
+                            NotificationDialog.show("success","Beneficiary added successfully.",true);
+                            addBtn.setDisable(false);
+                            cancelBtn.setDisable(false);
+                            errorLabel.setText("");
+                            //NotificationDialog.showWithAnchor(lastAnchor,"Success!","Login Successful !", true);
+
                         });
 
                     } catch (InterruptedException | ExecutionException ex) {

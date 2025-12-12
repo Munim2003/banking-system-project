@@ -112,7 +112,6 @@ public class LoginController {
 
             stage.show();
             NotificationDialog.showWithAnchor(root,"Success!","Login Successful !", true);
-
         }
         else{
             NotificationDialog.show("Sorry","Invalid Password", false);
