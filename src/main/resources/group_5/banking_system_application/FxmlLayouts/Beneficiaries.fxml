@@ -29,7 +29,8 @@
 
             <Button fx:id="searchButton"
                     text="Search"
-                    styleClass="secondary-btn"/>
+                    styleClass="secondary-btn"
+            onAction="#search"/>
         </HBox>
 
         <!-- ─── Beneficiaries table ───────────────────────────────── -->

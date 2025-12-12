@@ -8,6 +8,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
@@ -105,5 +106,20 @@ public class BeneficiaryController {
         beneficiaryTable.setItems(beneficiaries);
         NotificationDialog.initialize(root);
         AddBeneficiaryDialog.initialize(root);
+    }
+
+    // should be search field callback
+    public void search(ActionEvent e) {
+        if (searchField.getText().trim().equals("")) {
+            beneficiaryTable.setItems(beneficiaries);
+        } else {
+            ObservableList<Beneficiary> otherList = FXCollections.observableArrayList();
+            for (var b : beneficiaries) {
+                if (b.getBeneficiaryName().toUpperCase().trim().startsWith(searchField.getText().toUpperCase())) {
+                    otherList.add(b);
+                }
+            }
+            beneficiaryTable.setItems(otherList);
+        }
     }
 }
