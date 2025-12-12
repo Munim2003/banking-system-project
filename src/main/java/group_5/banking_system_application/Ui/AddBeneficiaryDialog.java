@@ -233,6 +233,12 @@ public final class AddBeneficiaryDialog {
                     return;
                 }
 
+                if(email.equals(LoginController.globalUserEmail)) {
+                    errorLabel.setText("you cannot add yourself silly!");
+                    NotificationDialog.shake(emailField);
+                    return;
+                }
+
                 // background thread for Firestore
                 addBtn.setDisable(true);
                 cancelBtn.setDisable(true);
