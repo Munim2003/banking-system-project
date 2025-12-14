@@ -1,5 +1,10 @@
 package group_5.banking_system_application.Ui;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.cloud.FirestoreClient;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -19,6 +24,7 @@ import java.util.List;
 
 public class DashboardController {
 
+    private static final Firestore db = FirestoreClient.getFirestore();
     @FXML
     private Button bAccounts;
 
@@ -62,10 +68,35 @@ public class DashboardController {
                     if (c2 instanceof Label) {
                         if (((Label) c2).getText().equals("Welcome back, Munim")) {
                             ((Label) c2).setText("Welcome back, " + LoginController.userName);
-                            break;
+                        }
+                    } else if (c2 instanceof VBox) {
+                        for (var c3 : ((VBox) c2).getChildren()) {
+                            if (c3 instanceof Label) {
+                                System.out.println(((Label) c3).getText());
+
+                                if (((Label) c3).getText().equals("$18,920.52")) {
+                                    System.out.println("lol it equals number");
+                                    ApiFuture<QuerySnapshot> userFuture =
+                                            db.collection("users")
+                                                    .whereEqualTo("email", LoginController.globalUserEmail)
+                                                    .get();
+
+
+                                    try {
+                                        List<QueryDocumentSnapshot> userDoc = userFuture.get().getDocuments();
+                                        var userQuery = userDoc.getFirst();
+                                        ((Label) c3).setText(((Number) userQuery.get("balance")) + "");
+                                    } catch (Exception except) {
+
+                                    }
+                                    break;
+                                }
+
+                            }
                         }
                     }
                 }
+
             }
         }
 
@@ -79,6 +110,7 @@ public class DashboardController {
         // Dialog initializations
         NotificationDialog.initialize(root);
         AddBeneficiaryDialog.initialize(root);
+        TransferDialog.initialize(root);
 
         // Ticker + nav tip
         initializeTicker();
@@ -271,6 +303,13 @@ public class DashboardController {
     @FXML
     private void onAddBeneficiaryClicked() {
         AddBeneficiaryDialog.show(currentUserId, this::reloadBeneficiariesOnDashboard);
+    }
+    @FXML
+    private void onTransferClicked() {
+        TransferDialog.show(currentUserId, this::reloadBeneficiariesOnDashboard);
+
+
+
     }
 
     private void reloadBeneficiariesOnDashboard() {

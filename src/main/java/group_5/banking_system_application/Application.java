@@ -33,6 +33,7 @@ public class Application extends javafx.application.Application {
         );
         stage.setTitle("Login or Sign Up");
         stage.setScene(scene);
+
         stage.show();
     }
 }

@@ -108,6 +108,7 @@ public class RegistrationController {
                 map.put("lastName", tfLast.getText());
                 map.put("email", tfEmail.getText());
                 map.put("hashedPassword", PasswordAuthUtil.hashPassword(pfPassword.getText()));
+                map.put("balance",0.0);
                 docRef.set(map).get();
 
 
