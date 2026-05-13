@@ -1,73 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
+<ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="group_5.banking_system_application.Ui.DashboardController"
-            prefHeight="400.0" prefWidth="600.0" spacing="20"
-      fx:id="root">
-    <HBox alignment="CENTER_LEFT" spacing="20">
-        <Label fx:id="welcomeLabel" styleClass="dashboard-welcome" text="Welcome back" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
-    </HBox>
-    <HBox spacing="18">
-            <VBox styleClass="card" spacing="6" prefWidth="230" style="-fx-text-fill: #66FF66; -fx-font-size: 14px;">
-                <Label text="Total Balance" styleClass="card-title"/>
-                <Label fx:id="totalBalanceLabel" text="\$0.00" styleClass="card-value"/>
-                <Label text="+3.4% this week"/>
+            fitToWidth="true"
+            styleClass="content-scroll"
+            fx:id="root">
+    <content>
+        <VBox spacing="20" styleClass="page-root">
+            <VBox spacing="4">
+                <Label fx:id="welcomeLabel" styleClass="screen-title dashboard-welcome" text="Welcome back"/>
+                <Label text="Here is a snapshot of your Vaultiq accounts." styleClass="page-subtitle" wrapText="true"/>
             </VBox>
-        <VBox styleClass="card" spacing="6" prefWidth="230" style="-fx-text-fill: #F97373; -fx-font-size: 14px;">
-            <Label text="Monthly Spending" styleClass="card-title"/>
-            <Label fx:id="monthlySpendLabel" text="\$0.00" styleClass="card-value"/>
-            <Label text="- 1.1% vs last month"/>
+
+            <HBox spacing="18">
+                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
+                    <Label text="Total balance" styleClass="section-heading"/>
+                    <Label fx:id="totalBalanceLabel" text="\$0.00" styleClass="card-value"/>
+                    <Label fx:id="balanceTrendLabel" text="Loading trend" styleClass="stat-trend trend-neutral" wrapText="true"/>
+                </VBox>
+                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
+                    <Label text="Monthly spending" styleClass="section-heading"/>
+                    <Label fx:id="monthlySpendLabel" text="\$0.00" styleClass="card-value"/>
+                    <Label fx:id="spendTrendLabel" text="Loading trend" styleClass="stat-trend trend-neutral" wrapText="true"/>
+                </VBox>
+                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
+                    <Label text="Accounts" styleClass="section-heading"/>
+                    <Label fx:id="activeAccountsLabel" text="1" styleClass="card-value"/>
+                    <Label text="1 checking, 0 savings" styleClass="stat-trend trend-neutral" wrapText="true"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="18">
+                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="220">
+                    <Label text="Account growth" styleClass="section-heading"/>
+                    <StackPane fx:id="growthChart" VBox.vgrow="ALWAYS" minHeight="160"/>
+                </VBox>
+
+                <VBox styleClass="card dashboard-panel" spacing="12" prefWidth="260" minWidth="240"
+                      alignment="TOP_CENTER" minHeight="220">
+                    <Label text="Quick actions" styleClass="section-heading"/>
+                    <Button text="Transfer funds" styleClass="primary-btn" onAction="#onTransferClicked"/>
+                    <Button text="View statements" styleClass="secondary-btn"/>
+                    <Button text="Add beneficiary" styleClass="secondary-btn" onAction="#onAddBeneficiaryClicked"/>
+                </VBox>
+            </HBox>
+
+            <VBox styleClass="card dashboard-panel" spacing="10" maxWidth="Infinity">
+                <Label text="Recent activity" styleClass="section-heading"/>
+                <VBox fx:id="recentActivityContainer" spacing="6"/>
+            </VBox>
+
+            <HBox fx:id="tickerContainer" alignment="CENTER_LEFT" styleClass="ticker-container"
+                  prefHeight="40" maxHeight="40" minHeight="40">
+                <Label fx:id="tickerLabel" styleClass="ticker-text" text="Loading suggestions..."/>
+            </HBox>
         </VBox>
-        <VBox styleClass="card" spacing="6" style="-fx-font-size: 14px;">
-            <Label text="Active Accounts" styleClass="card-title"/>
-            <Label fx:id="activeAccountsLabel" text="1" styleClass="card-value"/>
-            <Label text="1 checking • 0 savings" wrapText="true"/>
-        </VBox>
-    </HBox>
-
-    <HBox spacing="18">
-        <VBox styleClass="card" prefWidth="420" prefHeight="220" spacing="10" HBox.hgrow="ALWAYS">
-            <Label text="Account Growth" styleClass="card-title"/>
-            <StackPane fx:id="growthChart"
-                       prefHeight="140"
-                       prefWidth="380"
-                       maxHeight="Infinity"
-                       maxWidth="Infinity">
-            </StackPane>
-        </VBox>
-
-        <VBox styleClass="card" spacing="12" prefHeight="220"
-              prefWidth="260"
-              alignment="TOP_CENTER" style="-fx-padding: 18 22 22 22">
-
-            <Label text="Quick Actions" styleClass="card-title"/>
-            <Button text="Transfer funds" styleClass="primary-btn" onAction="#onTransferClicked"/>
-            <Button text="View Statements" styleClass="secondary-btn"/>
-            <Button text="Add Beneficiary" styleClass="secondary-btn" onAction="#onAddBeneficiaryClicked"/>
-        </VBox>
-    </HBox>
-
-    <VBox styleClass="card" spacing="10" maxWidth="Infinity">
-        <Label text="Recent activity" styleClass="card-title"/>
-        <VBox fx:id="recentActivityContainer" spacing="6"/>
-    </VBox>
-
-    <HBox fx:id="tickerContainer" 
-          alignment="CENTER_LEFT" 
-          styleClass="ticker-container"
-          prefHeight="40"
-          maxHeight="40"
-          minHeight="40">
-        <Label fx:id="tickerLabel" 
-               styleClass="ticker-text"
-               text="Loading suggestions..."/>
-    </HBox>
-
-</VBox>
+    </content>
+</ScrollPane>

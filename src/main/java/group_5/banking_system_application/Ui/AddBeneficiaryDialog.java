@@ -1,8 +1,11 @@
 package group_5.banking_system_application.Ui;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.SetOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import group_5.banking_system_application.Application;
 import javafx.animation.*;
@@ -20,9 +23,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.threeten.bp.LocalDateTime;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public final class AddBeneficiaryDialog {
@@ -241,94 +246,76 @@ public final class AddBeneficiaryDialog {
                 // background thread for Firestore
                 addBtn.setDisable(true);
                 cancelBtn.setDisable(true);
-                errorLabel.setText("Checking user...");
+                errorLabel.setText("Verifying email…");
 
-              //  new Thread(() -> {
+                new Thread(() -> {
                     try {
                         ApiFuture<QuerySnapshot> userFuture =
                                 db.collection("users")
                                         .whereEqualTo("email", LoginController.globalUserEmail)
+                                        .limit(1)
                                         .get();
 
                         List<QueryDocumentSnapshot> userDoc = userFuture.get().getDocuments();
+                        if (userDoc.isEmpty()) {
+                            Platform.runLater(() -> {
+                                errorLabel.setText("Signed-in user not found.");
+                                addBtn.setDisable(false);
+                                cancelBtn.setDisable(false);
+                            });
+                            return;
+                        }
+
                         var userQuery = userDoc.getFirst();
-                        if(userQuery.get("beneficiaries") != null) {
-                            var beneficiariesArray = (ArrayList<String>)userQuery.get("beneficiaries");
-                            for(var ben:beneficiariesArray) {
-                                if(ben.equals(email)) {
-                                    errorLabel.setText("you already added this beneficiary");
-                                    NotificationDialog.shake(emailField);
-                                    addBtn.setDisable(false);
-                                    cancelBtn.setDisable(false);
+                        if (userQuery.get("beneficiaries") != null) {
+                            @SuppressWarnings("unchecked")
+                            var beneficiariesArray = (ArrayList<String>) userQuery.get("beneficiaries");
+                            for (var ben : beneficiariesArray) {
+                                if (ben != null && ben.equalsIgnoreCase(email)) {
+                                    Platform.runLater(() -> {
+                                        errorLabel.setText("This beneficiary is already saved.");
+                                        NotificationDialog.shake(emailField);
+                                        addBtn.setDisable(false);
+                                        cancelBtn.setDisable(false);
+                                    });
                                     return;
                                 }
                             }
                         }
 
-                        //----
-                        ApiFuture<QuerySnapshot> future =
-                                db.collection("users")
-                                        .whereEqualTo("email", email)
-                                        .get();
-
-                        List<QueryDocumentSnapshot> docs = future.get().getDocuments();
-
-                        if (docs.isEmpty()) {
+                        if (!BeneficiaryService.emailExistsInDatabase(email)) {
                             Platform.runLater(() -> {
-                                errorLabel.setText("No user found with this email.");
+                                errorLabel.setText("No Vaultiq account exists for this email.");
+                                NotificationDialog.shake(emailField);
                                 addBtn.setDisable(false);
                                 cancelBtn.setDisable(false);
-                                NotificationDialog.shake(emailField);
                             });
                             return;
                         }
 
-                        // new code for beneficiaries
-                        DocumentReference docRef = Application.firestore.collection("users").document((String)userQuery.get("userID"));
-                        var map = new HashMap<String, Object>();
-                        map.put("userID",userQuery.get("userID") ); // to access user more easily
-                        map.put("firstName", userQuery.get("firstName"));
-                        map.put("lastName", userQuery.get("lastName"));
-                        map.put("email", userQuery.get("email"));
-                        map.put("hashedPassword", userQuery.get("hashedPassword"));
+                        DocumentReference docRef = Application.firestore.collection("users")
+                                .document((String) userQuery.get("userID"));
                         var benArray = new ArrayList<String>();
-                        if(userQuery.get("beneficiaries") != null) {
-                            for (var i : (ArrayList<String>) userQuery.get("beneficiaries")) {
-                                benArray.add(i);
-                            }
+                        if (userQuery.get("beneficiaries") != null) {
+                            @SuppressWarnings("unchecked")
+                            List<String> existing = (List<String>) userQuery.get("beneficiaries");
+                            benArray.addAll(existing);
                         }
                         benArray.add(email);
-                        map.put("beneficiaries",benArray);
-                        docRef.set(map).get();
-                        /*
-                        DocumentSnapshot beneficiaryUser = docs.get(0);
-                        String beneficiaryUserId = beneficiaryUser.getId();
 
-                        String beneficiaryId = UUID.randomUUID().toString();
+                        Map<String, Object> patch = new HashMap<>();
+                        patch.put("beneficiaries", benArray);
+                        docRef.set(patch, SetOptions.merge()).get();
 
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("beneficiaryId", beneficiaryId);
-                        data.put("ownerUserId", currentUserId);       // jis user ne add kiya
-                        data.put("beneficiaryUserId", beneficiaryUserId);
-                     //   data.put("createdAt", Timestamp.now());
-                        data.put("createdAt", LocalDateTime.now());
-
-                        db.collection("beneficiaries")
-                                .document(beneficiaryId)
-                                .set(data)
-                                .get();
-                         */
                         Platform.runLater(() -> {
-                           // closeAction.run();
                             if (onSuccess != null) {
-                                onSuccess.run();    // e.g. table refresh
+                                onSuccess.run();
                             }
-                            NotificationDialog.show("success","Beneficiary added successfully.",true);
+                            NotificationDialog.show("Success", "Beneficiary added successfully.", true);
                             addBtn.setDisable(false);
                             cancelBtn.setDisable(false);
                             errorLabel.setText("");
-                            //NotificationDialog.showWithAnchor(lastAnchor,"Success!","Login Successful !", true);
-
+                            closeAction.run();
                         });
 
                     } catch (InterruptedException | ExecutionException ex) {
@@ -339,7 +326,7 @@ public final class AddBeneficiaryDialog {
                             cancelBtn.setDisable(false);
                         });
                     }
-               // }).start();
+                }).start();
             });
 
             // ---------- entrance animation ----------

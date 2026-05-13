@@ -3,34 +3,45 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="CENTER" prefHeight="500.0" prefWidth="500.0" styleClass="card" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="group_5.banking_system_application.Ui.RegistrationController">
-  <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="205.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <Label style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28; -fx-font-weight: 400;" styleClass="title" text="  Account Information" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
-      <TextField fx:id="tfFirst" promptText="John" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField fx:id="tfLast" promptText="Smith" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField fx:id="tfEmail" promptText="you@example.com" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <PasswordField fx:id="pfPassword" promptText="***********" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <PasswordField fx:id="pfReenter" promptText="***********" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-      <Label text="First Name:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-      <Label text="Last Name:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-      <Label alignment="CENTER" text="Email:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-      <Label alignment="CENTER_RIGHT" text="Password:   " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-      <Label text="Re-enter Password:   " GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-      <Button fx:id="btnSave" mnemonicParsing="false" text="Save" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-      <Button fx:id="btnReset" mnemonicParsing="false" text="Reset" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-   </children>
-</GridPane>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="group_5.banking_system_application.Ui.AccountController"
+            fitToWidth="true"
+            styleClass="content-scroll"
+            fx:id="root">
+    <content>
+        <VBox spacing="20" styleClass="page-root" maxWidth="640">
+            <VBox spacing="6">
+                <Label text="Account" styleClass="screen-title"/>
+                <Label text="View and update your Vaultiq profile. Balance updates after transfers."
+                       styleClass="page-subtitle" wrapText="true"/>
+            </VBox>
+
+            <VBox styleClass="card" spacing="14">
+                <Label text="Profile" styleClass="section-heading"/>
+                <GridPane hgap="12" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="120" prefWidth="140"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <Label text="First name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="firstNameField" promptText="First name" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Last name" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="lastNameField" promptText="Last name" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Email" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <Label fx:id="emailLabel" text="—" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="account-readonly"/>
+                    <Label text="Balance" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <Label fx:id="balanceLabel" text="\$0.00" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="card-value"/>
+                    <Label text="User ID" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <Label fx:id="userIdLabel" text="—" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="account-readonly"/>
+                </GridPane>
+
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Button text="Save changes" styleClass="primary-btn" onAction="#onSave"/>
+                    <Button text="Refresh" styleClass="secondary-btn" onAction="#onRefresh"/>
+                </HBox>
+                <Label fx:id="statusLabel" text="Loading account…" styleClass="page-subtitle" wrapText="true"/>
+            </VBox>
+        </VBox>
+    </content>
+</ScrollPane>

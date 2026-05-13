@@ -11,6 +11,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,6 +19,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +53,15 @@ public class TransactionsController {
 
     @FXML
     private TableColumn<Transactions, String> statusColumn;
+
+    @FXML
+    private Label monthSpentLabel;
+
+    @FXML
+    private Label monthReceivedLabel;
+
+    @FXML
+    private Label monthSpentTrendLabel;
 
     private final ObservableList<Transactions> transactions = FXCollections.observableArrayList();
     private FilteredList<Transactions> filtered;
@@ -164,13 +176,44 @@ public class TransactionsController {
                     rows.add(Transactions.fromFirestore(d));
                 }
 
+                List<QueryDocumentSnapshot> chronological = new ArrayList<>(docs);
+                chronological.sort((a, b) -> FirestoreMoney.toDate(a, "createdAt")
+                        .compareTo(FirestoreMoney.toDate(b, "createdAt")));
+
+                ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+                double spent = AccountMetrics.sumOutgoingInMonth(chronological, now.getYear(), now.getMonthValue());
+                double received = AccountMetrics.sumIncomingInMonth(chronological, now.getYear(), now.getMonthValue());
+                AccountMetrics.Trend spendTrend = AccountMetrics.spendingMonthTrend(chronological);
+
                 Platform.runLater(() -> {
                     transactions.setAll(rows);
                     applyFilters();
+                    if (monthSpentLabel != null) {
+                        monthSpentLabel.setText(String.format(Locale.US, "$%,.2f", spent));
+                    }
+                    if (monthReceivedLabel != null) {
+                        monthReceivedLabel.setText(String.format(Locale.US, "$%,.2f", received));
+                    }
+                    applyTrendLabel(monthSpentTrendLabel, spendTrend);
                 });
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void applyTrendLabel(Label label, AccountMetrics.Trend trend) {
+        if (label == null || trend == null) {
+            return;
+        }
+        label.setText(trend.text);
+        label.getStyleClass().removeAll("trend-positive", "trend-negative", "trend-neutral");
+        if (trend.text.contains("No ") || trend.text.contains("Not enough") || trend.text.contains("First spending")) {
+            label.getStyleClass().add("trend-neutral");
+        } else if (trend.positive) {
+            label.getStyleClass().add("trend-positive");
+        } else {
+            label.getStyleClass().add("trend-negative");
+        }
     }
 }

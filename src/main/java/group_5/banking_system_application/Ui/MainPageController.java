@@ -48,7 +48,7 @@ public class MainPageController {
             contentComponent.getChildren().setAll(page);
 
             // Ensure the page fills the available space
-            StackPane.setAlignment(page, javafx.geometry.Pos.TOP_LEFT);
+            StackPane.setAlignment(page, javafx.geometry.Pos.TOP_CENTER);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load FXML: " + fxmlPath, e);

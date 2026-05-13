@@ -10,11 +10,9 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -22,7 +20,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -38,7 +35,7 @@ public class DashboardController {
     private StackPane growthChart;
 
     @FXML
-    private VBox root;
+    private ScrollPane root;
 
     @FXML
     private HBox tickerContainer;
@@ -59,6 +56,12 @@ public class DashboardController {
     private Label monthlySpendLabel;
 
     @FXML
+    private Label balanceTrendLabel;
+
+    @FXML
+    private Label spendTrendLabel;
+
+    @FXML
     private Label activeAccountsLabel;
 
     @FXML
@@ -75,7 +78,6 @@ public class DashboardController {
     private String currentUserId;
 
     private LineChart<String, Number> balanceChart;
-    private final SimpleDateFormat chartDayFormat = new SimpleDateFormat("MMM d", Locale.US);
     private final SimpleDateFormat activityFormat = new SimpleDateFormat("MMM d, HH:mm", Locale.US);
 
     @FXML
@@ -89,7 +91,7 @@ public class DashboardController {
             activeAccountsLabel.setText("1");
         }
 
-        balanceChart = createEmptyGrowthChart();
+        balanceChart = BalanceChartHelper.createChart();
         balanceChart.setMinSize(0, 0);
         balanceChart.prefWidthProperty().bind(growthChart.widthProperty());
         balanceChart.prefHeightProperty().bind(growthChart.heightProperty());
@@ -103,20 +105,6 @@ public class DashboardController {
         initializeNavSuggestion();
 
         refreshDashboardFromFirestore();
-    }
-
-    private LineChart<String, Number> createEmptyGrowthChart() {
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        LineChart<String, Number> chart = new LineChart<>(xAxis, yAxis);
-        chart.setLegendVisible(false);
-        chart.setAnimated(false);
-        chart.setHorizontalGridLinesVisible(false);
-        chart.setVerticalGridLinesVisible(false);
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("—", 0));
-        chart.getData().add(series);
-        return chart;
     }
 
     public void refreshDashboardFromFirestore() {
@@ -135,15 +123,17 @@ public class DashboardController {
                                 .document(uid)
                                 .collection(TransferDialog.USER_TRANSACTIONS_SUBCOLLECTION)
                                 .orderBy("createdAt", Query.Direction.DESCENDING)
-                                .limit(120)
+                                .limit(200)
                                 .get();
 
                 List<QueryDocumentSnapshot> txDocs = new ArrayList<>(txFuture.get().getDocuments());
+                List<QueryDocumentSnapshot> chronological = new ArrayList<>(txDocs);
+                chronological.sort(Comparator.comparing(d -> FirestoreMoney.toDate(d, "createdAt")));
 
-                double monthSpend = computeMonthOutgoingSpend(txDocs);
-
-                List<QueryDocumentSnapshot> forChart = new ArrayList<>(txDocs);
-                forChart.sort(Comparator.comparing(d -> FirestoreMoney.toDate(d, "createdAt")));
+                ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+                double monthSpend = AccountMetrics.sumOutgoingInMonth(chronological, now.getYear(), now.getMonthValue());
+                AccountMetrics.Trend balanceTrend = AccountMetrics.balanceWeekTrend(balance, chronological);
+                AccountMetrics.Trend spendTrend = AccountMetrics.spendingMonthTrend(chronological);
 
                 List<Transactions> recentRows = new ArrayList<>();
                 for (int i = 0; i < Math.min(5, txDocs.size()); i++) {
@@ -159,7 +149,9 @@ public class DashboardController {
                     }
                     totalBalanceLabel.setText(String.format(Locale.US, "$%,.2f", balance));
                     monthlySpendLabel.setText(String.format(Locale.US, "$%,.2f", monthSpend));
-                    rebuildChart(forChart, balance);
+                    applyTrendLabel(balanceTrendLabel, balanceTrend);
+                    applyTrendLabel(spendTrendLabel, spendTrend);
+                    BalanceChartHelper.populate(balanceChart, chronological, balance);
                     rebuildRecentActivity(recentRows);
                 });
             } catch (Exception e) {
@@ -168,43 +160,18 @@ public class DashboardController {
         }).start();
     }
 
-    private double computeMonthOutgoingSpend(List<QueryDocumentSnapshot> txDocs) {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
-        int y = now.getYear();
-        int m = now.getMonthValue();
-        double sum = 0;
-        for (QueryDocumentSnapshot d : txDocs) {
-            if (!Transactions.FLOW_OUT.equals(d.getString("flow"))) {
-                continue;
-            }
-            Instant inst = FirestoreMoney.toDate(d, "createdAt").toInstant();
-            ZonedDateTime z = inst.atZone(ZoneId.systemDefault());
-            if (z.getYear() == y && z.getMonthValue() == m) {
-                sum += FirestoreMoney.toDouble(d.get("amount"));
-            }
-        }
-        return sum;
-    }
-
-    private void rebuildChart(List<QueryDocumentSnapshot> chronological, double currentBalance) {
-        XYChart.Series<String, Number> series = balanceChart.getData().getFirst();
-        series.getData().clear();
-
-        if (chronological.isEmpty()) {
-            series.getData().add(new XYChart.Data<>("Today", currentBalance));
+    private void applyTrendLabel(Label label, AccountMetrics.Trend trend) {
+        if (label == null || trend == null) {
             return;
         }
-
-        int maxPoints = 12;
-        int from = Math.max(0, chronological.size() - maxPoints);
-        for (int i = from; i < chronological.size(); i++) {
-            QueryDocumentSnapshot d = chronological.get(i);
-            String day = chartDayFormat.format(FirestoreMoney.toDate(d, "createdAt"));
-            double bal = FirestoreMoney.toDouble(d.get("balanceAfter"));
-            series.getData().add(new XYChart.Data<>(day, bal));
-        }
-        if (series.getData().isEmpty()) {
-            series.getData().add(new XYChart.Data<>("Today", currentBalance));
+        label.setText(trend.text);
+        label.getStyleClass().removeAll("trend-positive", "trend-negative", "trend-neutral");
+        if (trend.text.contains("No ") || trend.text.contains("Not enough") || trend.text.contains("First spending")) {
+            label.getStyleClass().add("trend-neutral");
+        } else if (trend.positive) {
+            label.getStyleClass().add("trend-positive");
+        } else {
+            label.getStyleClass().add("trend-negative");
         }
     }
 
@@ -213,7 +180,7 @@ public class DashboardController {
         if (rows.isEmpty()) {
             Label empty = new Label("No transactions yet. Use Transfer funds to move money between Vaultiq accounts.");
             empty.setWrapText(true);
-            empty.setStyle("-fx-text-fill: #B8B9C2; -fx-font-size: 13px;");
+            empty.getStyleClass().add("muted-copy");
             recentActivityContainer.getChildren().add(empty);
             return;
         }
@@ -222,20 +189,17 @@ public class DashboardController {
             row.setAlignment(Pos.CENTER_LEFT);
 
             Label when = new Label(activityFormat.format(t.getDate()));
-            when.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 12px;");
+            when.getStyleClass().add("activity-time");
             when.setMinWidth(130);
 
             Label desc = new Label(t.getDescription());
-            desc.setStyle("-fx-text-fill: #E5E7EB; -fx-font-size: 13px;");
             desc.setWrapText(true);
+            desc.getStyleClass().add("activity-desc");
             HBox.setHgrow(desc, javafx.scene.layout.Priority.ALWAYS);
 
             String sign = Transactions.FLOW_IN.equals(t.getFlow()) ? "+" : "-";
             Label amt = new Label(sign + String.format(Locale.US, "$%.2f", t.getAmount()));
-            boolean in = Transactions.FLOW_IN.equals(t.getFlow());
-            amt.setStyle(in
-                    ? "-fx-text-fill: #34D399; -fx-font-weight: 700; -fx-font-size: 13px;"
-                    : "-fx-text-fill: #F87171; -fx-font-weight: 700; -fx-font-size: 13px;");
+            amt.getStyleClass().add(Transactions.FLOW_IN.equals(t.getFlow()) ? "amount-in" : "amount-out");
 
             row.getChildren().addAll(when, desc, amt);
             recentActivityContainer.getChildren().add(row);

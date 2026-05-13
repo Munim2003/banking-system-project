@@ -185,6 +185,152 @@
       -fx-wrap-text: true;
   }
 
+  .content-scroll {
+      -fx-background-color: transparent;
+      -fx-background: transparent;
+      -fx-padding: 0;
+  }
+
+  .content-scroll > .viewport {
+      -fx-background-color: transparent;
+  }
+
+  .page-root {
+      -fx-padding: 0 4 8 4;
+  }
+
+  .screen-title {
+      -fx-font-size: 28px;
+      -fx-font-weight: 400;
+      -fx-text-fill: #F9FAFB;
+      -fx-wrap-text: true;
+      -fx-text-overrun: clip;
+  }
+
+  .label.screen-title {
+      -fx-font-size: 34px;
+      -fx-font-weight: 700;
+      -fx-text-fill: #FFFFFF;
+      -fx-font-family: "Inter";
+  }
+
+  .label.dashboard-welcome.screen-title {
+      -fx-font-size: 42px;
+      -fx-font-weight: 800;
+      -fx-text-fill: #FFFFFF;
+  }
+
+  .dashboard-panel {
+      -fx-padding: 18 22 22 22;
+  }
+
+  .label.section-heading {
+      -fx-font-size: 20px;
+      -fx-font-weight: 700;
+      -fx-text-fill: #EDE9FE;
+      -fx-wrap-text: true;
+      -fx-text-overrun: clip;
+  }
+
+  .label.field-label {
+      -fx-font-size: 13px;
+      -fx-font-weight: 600;
+      -fx-text-fill: #C4B5FD;
+  }
+
+  .label.account-readonly {
+      -fx-font-size: 14px;
+      -fx-font-weight: 500;
+      -fx-text-fill: #E5E7EB;
+      -fx-wrap-text: true;
+  }
+
+  .page-subtitle {
+      -fx-font-size: 14px;
+      -fx-text-fill: #B8B9C2;
+      -fx-wrap-text: true;
+      -fx-text-overrun: clip;
+  }
+
+  .stat-card-title {
+      -fx-text-fill: #A7B0FF;
+      -fx-font-size: 14px;
+      -fx-font-weight: 600;
+      -fx-wrap-text: true;
+      -fx-text-overrun: clip;
+  }
+
+  .label.stat-card-title {
+      -fx-font-size: 13px;
+      -fx-font-weight: 700;
+      -fx-text-fill: #C4B5FD;
+  }
+
+  .label.card-value {
+      -fx-font-size: 28px;
+      -fx-font-weight: 800;
+  }
+
+  .stat-trend {
+      -fx-font-size: 12px;
+      -fx-wrap-text: true;
+      -fx-text-overrun: clip;
+  }
+
+  .trend-positive {
+      -fx-text-fill: #4ADE80;
+  }
+
+  .trend-negative {
+      -fx-text-fill: #F87171;
+  }
+
+  .trend-neutral {
+      -fx-text-fill: #9CA3AF;
+  }
+
+  .muted-copy {
+      -fx-text-fill: #B8B9C2;
+      -fx-font-size: 13px;
+      -fx-wrap-text: true;
+  }
+
+  .activity-time {
+      -fx-text-fill: #9CA3AF;
+      -fx-font-size: 12px;
+  }
+
+  .activity-desc {
+      -fx-text-fill: #E5E7EB;
+      -fx-font-size: 13px;
+      -fx-wrap-text: true;
+  }
+
+  .amount-in {
+      -fx-text-fill: #34D399;
+      -fx-font-weight: 700;
+      -fx-font-size: 13px;
+  }
+
+  .amount-out {
+      -fx-text-fill: #F87171;
+      -fx-font-weight: 700;
+      -fx-font-size: 13px;
+  }
+
+  .insight-card {
+      -fx-padding: 18 20 18 20;
+  }
+
+  .balance-growth-chart {
+      -fx-background-color: transparent;
+  }
+
+  .card-title {
+      -fx-wrap-text: true;
+      -fx-text-overrun: clip;
+  }
+
   /* Generic dashboard card */
   .card {
       -fx-background-color: linear-gradient(to bottom, #221041, #140927);

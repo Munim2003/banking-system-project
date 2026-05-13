@@ -1,90 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="group_5.banking_system_application.Ui.TransactionsController"
-      prefHeight="400.0" prefWidth="600.0" spacing="20">
-    <HBox alignment="CENTER_LEFT" spacing="20">
 
-        <!-- Left: Titles -->
-        <VBox spacing="6">
-            <Label text="Transaction History"
-                   style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
-            <Label text="Review and filter your recent transactions" styleClass="card-subtitle"/>
-        </VBox>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="group_5.banking_system_application.Ui.TransactionsController"
+            fitToWidth="true"
+            styleClass="content-scroll"
+            fx:id="root">
+    <content>
+        <VBox spacing="20" styleClass="page-root">
+            <VBox spacing="16" styleClass="page-header">
+                <VBox spacing="6">
+                    <Label text="Transactions" styleClass="screen-title"/>
+                    <Label text="Review and filter your recent activity." styleClass="page-subtitle" wrapText="true"/>
+                </VBox>
 
-        <Region HBox.hgrow="ALWAYS"/>
+                <HBox spacing="18" alignment="CENTER_LEFT">
+                    <VBox spacing="4" alignment="CENTER_LEFT">
+                        <HBox alignment="CENTER_LEFT" spacing="6">
+                            <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                                <image>
+                                    <Image url="@../images/filter-icon.png"/>
+                                </image>
+                            </ImageView>
+                            <Label text="Filter" styleClass="control-label"/>
+                        </HBox>
+                        <ComboBox fx:id="comboBox" promptText="All activity" prefWidth="200" styleClass="top-combo"/>
+                    </VBox>
 
-        <!-- Right: Filter + Search -->
-        <HBox spacing="18" alignment="CENTER_RIGHT">
-
-            <!-- Filter (Dropdown) -->
-            <VBox spacing="4" alignment="CENTER_LEFT">
-                <HBox alignment="CENTER_LEFT" spacing="6">
-                    <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
-                        <image>
-                            <!-- replace when icon ready -->
-                            <Image url="@../images/filter-icon.png"/>
-                        </image>
-                    </ImageView>
-                    <Label text="Filter" styleClass="control-label"/>
+                    <VBox spacing="4" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="6">
+                            <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                                <image>
+                                    <Image url="@../images/search-icon.png"/>
+                                </image>
+                            </ImageView>
+                            <Label text="Search" styleClass="control-label"/>
+                        </HBox>
+                        <TextField fx:id="searchField" promptText="Search by description or email"
+                                   maxWidth="Infinity" styleClass="search-field"/>
+                    </VBox>
                 </HBox>
-                <ComboBox fx:id="comboBox"
-                          promptText="Select an Option"
-                          prefWidth="200"
-                          styleClass="top-combo"/>
             </VBox>
 
-            <!-- Search Field -->
-            <VBox spacing="4" alignment="CENTER_LEFT">
-                <HBox alignment="CENTER_LEFT" spacing="6">
-                    <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
-                        <image>
-                            <!-- replace when icon ready -->
-                            <Image url="@../images/search-icon.png"/>
-                        </image>
-                    </ImageView>
-                    <Label text="Search" styleClass="control-label"/>
-                </HBox>
-                <TextField fx:id="searchField"
-                           promptText="Search transactions…"
-                           prefWidth="180"
-                           styleClass="search-field"/>
-            </VBox>
+            <HBox spacing="18" styleClass="stat-row">
+                <VBox styleClass="card stat-card" spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Spent this month" styleClass="stat-card-title"/>
+                    <Label fx:id="monthSpentLabel" text="\$0.00" styleClass="card-value"/>
+                    <Label fx:id="monthSpentTrendLabel" text="Loading trend" styleClass="stat-trend trend-neutral" wrapText="true"/>
+                </VBox>
+                <VBox styleClass="card stat-card" spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Received this month" styleClass="stat-card-title"/>
+                    <Label fx:id="monthReceivedLabel" text="\$0.00" styleClass="card-value"/>
+                    <Label text="Incoming transfers and bonuses" styleClass="stat-trend trend-neutral" wrapText="true"/>
+                </VBox>
+            </HBox>
 
-        </HBox>
-    </HBox>
-
-    <HBox spacing="40">
-        <VBox styleClass="card" prefWidth="230" spacing="6">
-            <Label text="This Month Spent" styleClass="card-title"/>
-            <Label text="\$2,340.12" styleClass="card-value"/>
-            <Label text="+3.2% vs last month" styleClass="card-subtitle"/>
+            <TableView fx:id="transactionsTable" VBox.vgrow="ALWAYS" fixedCellSize="40" styleClass="table-card" minHeight="320">
+                <columns>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="140"/>
+                    <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="260"/>
+                    <TableColumn fx:id="amountColumn" text="Amount" prefWidth="110"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="110"/>
+                    <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="110"/>
+                </columns>
+            </TableView>
         </VBox>
-        <VBox styleClass="card" prefWidth="230" spacing="6">
-            <Label text="This Month Spent" styleClass="card-title"/>
-            <Label text="\$2,340.12" styleClass="card-value"/>
-            <Label text="+3.2% vs last month" styleClass="card-subtitle"/>
-        </VBox>
-    </HBox>
-
-    <TableView fx:id="transactionsTable" VBox.vgrow="ALWAYS" fixedCellSize="40" styleClass="table-card">
-        <columns>
-            <TableColumn fx:id="dateColumn" text="Date" prefWidth="110"/>
-            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="260"/>
-            <TableColumn fx:id="amountColumn" text="Amount" prefWidth="110"/>
-            <TableColumn fx:id="statusColumn" text="Status" prefWidth="110"/>
-            <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="110"/>
-        </columns>
-
-    </TableView>
-
-</VBox>
+    </content>
+</ScrollPane>

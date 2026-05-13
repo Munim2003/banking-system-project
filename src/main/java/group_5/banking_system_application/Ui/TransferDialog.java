@@ -21,6 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -103,32 +104,31 @@ public final class TransferDialog {
                             "-fx-text-fill: #F5F6FA;"
             );
 
-            Label subtitle = new Label("Enter the email of an existing Vaultiq user to transfer funds to.");
+            Label subtitle = new Label("Choose a saved beneficiary to transfer funds to.");
             subtitle.setWrapText(true);
             subtitle.setStyle(
                     "-fx-font-size: 13px;" +
                             "-fx-text-fill: #B8B9C2;"
             );
 
-            Label emailLabel = new Label("Recipient email");
-            emailLabel.setStyle(
+            Label beneficiaryLabel = new Label("Beneficiary");
+            beneficiaryLabel.setStyle(
                     "-fx-font-size: 13px;" +
                             "-fx-text-fill: #D3D4DD;"
             );
 
-            TextField emailField = new TextField();
-            emailField.setPromptText("email@example.com");
-            emailField.setStyle(
+            ComboBox<String> beneficiarySelect = new ComboBox<>();
+            beneficiarySelect.setPromptText("Select beneficiary");
+            beneficiarySelect.setMaxWidth(Double.MAX_VALUE);
+            beneficiarySelect.setStyle(
                     "-fx-background-color: #120C25;" +
                             "-fx-text-fill: #F5F6FA;" +
-                            "-fx-prompt-text-fill: #6B6C7A;" +
                             "-fx-background-radius: 10;" +
                             "-fx-border-radius: 10;" +
                             "-fx-border-color: rgba(255,255,255,0.10);" +
-                            "-fx-border-width: 1;" +
-                            "-fx-padding: 8 10;"
+                            "-fx-border-width: 1;"
             );
-            emailField.setPrefWidth(280);
+            beneficiarySelect.setPrefWidth(280);
 
             Label amountLabel = new Label("Amount");
             amountLabel.setStyle(
@@ -226,8 +226,8 @@ public final class TransferDialog {
             card.getChildren().addAll(
                     titleLabel,
                     subtitle,
-                    emailLabel,
-                    emailField,
+                    beneficiaryLabel,
+                    beneficiarySelect,
                     amountLabel,
                     amountField,
                     errorLabel,
@@ -248,19 +248,44 @@ public final class TransferDialog {
 
             cancelBtn.setOnAction(e -> closeAction.run());
 
+            new Thread(() -> {
+                try {
+                    List<String> saved = BeneficiaryService.loadSavedBeneficiaryEmails();
+                    Platform.runLater(() -> {
+                        beneficiarySelect.getItems().setAll(saved);
+                        if (saved.isEmpty()) {
+                            errorLabel.setText("Add a beneficiary before transferring funds.");
+                            sendBtn.setDisable(true);
+                        } else {
+                            beneficiarySelect.getSelectionModel().selectFirst();
+                            errorLabel.setText("");
+                            sendBtn.setDisable(false);
+                        }
+                    });
+                } catch (ExecutionException | InterruptedException ex) {
+                    Platform.runLater(() -> errorLabel.setText("Could not load beneficiaries."));
+                }
+            }).start();
+
             sendBtn.setOnAction(e -> {
-                String recipientEmail = emailField.getText().trim();
+                String recipientEmail = beneficiarySelect.getValue();
                 errorLabel.setText("");
 
-                if (recipientEmail.isEmpty()) {
-                    errorLabel.setText("Please enter the recipient email.");
-                    NotificationDialog.shake(emailField);
+                if (recipientEmail == null || recipientEmail.isBlank()) {
+                    errorLabel.setText("Select a beneficiary.");
+                    NotificationDialog.shake(beneficiarySelect);
+                    return;
+                }
+
+                if (!BeneficiaryService.isSavedBeneficiary(recipientEmail, beneficiarySelect.getItems())) {
+                    errorLabel.setText("Transfers are limited to saved beneficiaries.");
+                    NotificationDialog.shake(beneficiarySelect);
                     return;
                 }
 
                 if (recipientEmail.equalsIgnoreCase(LoginController.globalUserEmail)) {
                     errorLabel.setText("You cannot transfer money to yourself.");
-                    NotificationDialog.shake(emailField);
+                    NotificationDialog.shake(beneficiarySelect);
                     return;
                 }
 
@@ -301,10 +326,10 @@ public final class TransferDialog {
                         List<QueryDocumentSnapshot> receiverDocs = receiverFuture.get().getDocuments();
                         if (receiverDocs.isEmpty()) {
                             Platform.runLater(() -> {
-                                errorLabel.setText("No user found with this email.");
+                                errorLabel.setText("Beneficiary account is no longer available.");
                                 sendBtn.setDisable(false);
                                 cancelBtn.setDisable(false);
-                                NotificationDialog.shake(emailField);
+                                NotificationDialog.shake(beneficiarySelect);
                             });
                             return;
                         }
@@ -395,7 +420,7 @@ public final class TransferDialog {
                             sendBtn.setDisable(false);
                             cancelBtn.setDisable(false);
                             errorLabel.setText("");
-                            emailField.clear();
+                            beneficiarySelect.getSelectionModel().clearSelection();
                             amountField.clear();
                             closeAction.run();
                         });
