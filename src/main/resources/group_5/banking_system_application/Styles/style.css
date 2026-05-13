@@ -4,6 +4,26 @@
       -fx-font-weight: 600;
   }
 
+.dashboard-card {
+    -fx-background-color: linear-gradient(to bottom, #22143D, #140B2A);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 18 22 22 22;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.25, 0, 6);
+}
+
+.label.dashboard-welcome {
+    -fx-font-size: 48px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Inter";
+    -fx-wrap-text: true;
+    -fx-text-overrun: clip;
+}
+
 .button {
     -fx-background-color: linear-gradient(to bottom, #7C3AED, #5B21B6);
     -fx-text-fill: white;
@@ -212,12 +232,6 @@
       -fx-font-weight: 700;
       -fx-text-fill: #FFFFFF;
       -fx-font-family: "Inter";
-  }
-
-  .label.dashboard-welcome.screen-title {
-      -fx-font-size: 42px;
-      -fx-font-weight: 800;
-      -fx-text-fill: #FFFFFF;
   }
 
   .dashboard-panel {

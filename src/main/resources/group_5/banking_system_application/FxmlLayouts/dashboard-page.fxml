@@ -11,23 +11,20 @@
             fx:id="root">
     <content>
         <VBox spacing="20" styleClass="page-root">
-            <VBox spacing="4">
-                <Label fx:id="welcomeLabel" styleClass="screen-title dashboard-welcome" text="Welcome back"/>
-                <Label text="Here is a snapshot of your Vaultiq accounts." styleClass="page-subtitle" wrapText="true"/>
-            </VBox>
+            <Label fx:id="welcomeLabel" styleClass="dashboard-welcome" text="Welcome back"/>
 
             <HBox spacing="18">
-                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
+                <VBox styleClass="dashboard-card" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
                     <Label text="Total balance" styleClass="section-heading"/>
                     <Label fx:id="totalBalanceLabel" text="\$0.00" styleClass="card-value"/>
                     <Label fx:id="balanceTrendLabel" text="Loading trend" styleClass="stat-trend trend-neutral" wrapText="true"/>
                 </VBox>
-                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
+                <VBox styleClass="dashboard-card" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
                     <Label text="Monthly spending" styleClass="section-heading"/>
                     <Label fx:id="monthlySpendLabel" text="\$0.00" styleClass="card-value"/>
                     <Label fx:id="spendTrendLabel" text="Loading trend" styleClass="stat-trend trend-neutral" wrapText="true"/>
                 </VBox>
-                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
+                <VBox styleClass="dashboard-card" spacing="10" HBox.hgrow="ALWAYS" minHeight="150">
                     <Label text="Accounts" styleClass="section-heading"/>
                     <Label fx:id="activeAccountsLabel" text="1" styleClass="card-value"/>
                     <Label text="1 checking, 0 savings" styleClass="stat-trend trend-neutral" wrapText="true"/>
@@ -35,12 +32,12 @@
             </HBox>
 
             <HBox spacing="18">
-                <VBox styleClass="card dashboard-panel" spacing="10" HBox.hgrow="ALWAYS" minHeight="220">
+                <VBox styleClass="dashboard-card" spacing="10" HBox.hgrow="ALWAYS" minHeight="220">
                     <Label text="Account growth" styleClass="section-heading"/>
                     <StackPane fx:id="growthChart" VBox.vgrow="ALWAYS" minHeight="160"/>
                 </VBox>
 
-                <VBox styleClass="card dashboard-panel" spacing="12" prefWidth="260" minWidth="240"
+                <VBox styleClass="dashboard-card" spacing="12" prefWidth="260" minWidth="240"
                       alignment="TOP_CENTER" minHeight="220">
                     <Label text="Quick actions" styleClass="section-heading"/>
                     <Button text="Transfer funds" styleClass="primary-btn" onAction="#onTransferClicked"/>
@@ -49,7 +46,7 @@
                 </VBox>
             </HBox>
 
-            <VBox styleClass="card dashboard-panel" spacing="10" maxWidth="Infinity">
+            <VBox styleClass="dashboard-card" spacing="10" maxWidth="Infinity">
                 <Label text="Recent activity" styleClass="section-heading"/>
                 <VBox fx:id="recentActivityContainer" spacing="6"/>
             </VBox>
