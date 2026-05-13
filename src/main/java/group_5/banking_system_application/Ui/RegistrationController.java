@@ -1,6 +1,8 @@
 package group_5.banking_system_application.Ui;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import group_5.banking_system_application.Application;
@@ -18,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 /*
@@ -29,6 +32,9 @@ either get an ID or be reregistered.
  */
 
 public class RegistrationController {
+
+    /** One-time balance credited to every newly registered Vaultiq user. */
+    private static final double NEW_USER_INCENTIVE_USD = 1000.0;
     @FXML
     private TextField tfFirst;
     @FXML
@@ -77,7 +83,7 @@ public class RegistrationController {
         if(first.isEmpty() || last.isEmpty() || email.isEmpty() || password.isEmpty()){
             NotificationDialog.show("Missing Info", "Please fill all fields", false);
             NotificationDialog.shake(btnRegister);
-//            btnRegister.setDisable(false);
+            return;
         }
 
 
@@ -108,20 +114,40 @@ public class RegistrationController {
                 map.put("lastName", tfLast.getText());
                 map.put("email", tfEmail.getText());
                 map.put("hashedPassword", PasswordAuthUtil.hashPassword(pfPassword.getText()));
-                map.put("balance",0.0);
-                docRef.set(map).get();
+                map.put("balance", NEW_USER_INCENTIVE_USD);
 
+                Map<String, Object> incentiveTx = new HashMap<>();
+                incentiveTx.put("amount", NEW_USER_INCENTIVE_USD);
+                incentiveTx.put("flow", Transactions.FLOW_IN);
+                incentiveTx.put("counterpartyEmail", "Vaultiq");
+                incentiveTx.put("balanceAfter", NEW_USER_INCENTIVE_USD);
+                incentiveTx.put("createdAt", Timestamp.now());
+                incentiveTx.put("status", "Completed");
+                incentiveTx.put("description", "Welcome bonus — new account incentive");
+
+                DocumentReference incentiveRef = docRef
+                        .collection(TransferDialog.USER_TRANSACTIONS_SUBCOLLECTION)
+                        .document("welcome_" + UUID.randomUUID());
+
+                WriteBatch batch = Application.firestore.batch();
+                batch.set(docRef, map);
+                batch.set(incentiveRef, incentiveTx);
+                batch.commit().get();
 
                 Platform.runLater(() -> {
-//                    btnRegister.setDisable(false);
-                    NotificationDialog.show("Success", "Account created!", true);
+                    NotificationDialog.show("Success",
+                            "Account created! A $" + (int) NEW_USER_INCENTIVE_USD + " welcome bonus was added to your balance.",
+                            true);
                 });
 
             } catch (FirebaseAuthException e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {
                     btnRegister.setDisable(false);
-                    NotificationDialog.show("Failed", e.getMessage(), false);
+                    String msg = e.getMessage() != null && e.getMessage().contains("EMAIL_EXISTS")
+                            ? "An account with this email already exists. Try logging in or use a different email."
+                            : e.getMessage();
+                    NotificationDialog.show("Registration failed", msg, false);
                 });
             } catch (Exception e) {
                 e.printStackTrace();

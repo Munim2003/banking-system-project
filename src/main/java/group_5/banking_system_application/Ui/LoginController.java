@@ -25,7 +25,50 @@ public class LoginController {
     // dirty fix to wrong name being displayed
     public static String userName = "Munim";
     public static String globalUserEmail;
+    /** Firestore document ID for the signed-in user (same as Firebase Auth UID for new registrations). */
+    public static String globalUserId;
     public Button loginButton;
+
+    /** Clears signed-in session (call on logout). */
+    public static void clearSession() {
+        globalUserEmail = null;
+        globalUserId = null;
+        userName = "";
+    }
+
+    /**
+     * Display name for greetings: "First Last" when available, otherwise first or last alone,
+     * otherwise the part of the email before {@code @}, otherwise "Member".
+     */
+    public static String deriveDisplayName(DocumentSnapshot document) {
+        String first = trimToEmpty(document.getString("firstName"));
+        String last = trimToEmpty(document.getString("lastName"));
+        if (!first.isEmpty() && !last.isEmpty()) {
+            return first + " " + last;
+        }
+        if (!first.isEmpty()) {
+            return first;
+        }
+        if (!last.isEmpty()) {
+            return last;
+        }
+        String email = document.getString("email");
+        if (email != null) {
+            int at = email.indexOf('@');
+            if (at > 0) {
+                return email.substring(0, at);
+            }
+            if (!email.isBlank()) {
+                return email.trim();
+            }
+        }
+        return "Member";
+    }
+
+    private static String trimToEmpty(String s) {
+        return s == null ? "" : s.trim();
+    }
+
     @FXML
     private TextField emailField;
     @FXML
@@ -90,11 +133,13 @@ public class LoginController {
         DocumentSnapshot document = snapShot.getDocuments().get(0);
 
         String storedPassword = (String) document.get("hashedPassword");
-        //gets name
-        String storedName = (String) document.get("firstName");
         if(PasswordAuthUtil.checkPassword(password,storedPassword)) {
             globalUserEmail = email;
-            LoginController.userName = storedName;
+            LoginController.userName = deriveDisplayName(document);
+            Object uidField = document.get("userID");
+            globalUserId = uidField instanceof String s && !s.isBlank()
+                    ? s
+                    : document.getId();
             Parent root = FXMLLoader.load(
                     getClass().getResource("/group_5/banking_system_application/FxmlLayouts/main-page.fxml")
             );

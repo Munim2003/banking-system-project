@@ -12,33 +12,28 @@
             prefHeight="400.0" prefWidth="600.0" spacing="20"
       fx:id="root">
     <HBox alignment="CENTER_LEFT" spacing="20">
-        <Label text="Welcome back, Munim" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
-<!--        />-->
+        <Label fx:id="welcomeLabel" styleClass="dashboard-welcome" text="Welcome back" style="-fx-font-family: Inter; -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 400;"/>
     </HBox>
     <HBox spacing="18">
             <VBox styleClass="card" spacing="6" prefWidth="230" style="-fx-text-fill: #66FF66; -fx-font-size: 14px;">
                 <Label text="Total Balance" styleClass="card-title"/>
-                <Label text="\$18,920.52" styleClass="card-value"/>
+                <Label fx:id="totalBalanceLabel" text="\$0.00" styleClass="card-value"/>
                 <Label text="+3.4% this week"/>
-<!--                />-->
             </VBox>
         <VBox styleClass="card" spacing="6" prefWidth="230" style="-fx-text-fill: #F97373; -fx-font-size: 14px;">
             <Label text="Monthly Spending" styleClass="card-title"/>
-            <Label text="\$3,202.14" styleClass="card-value"/>
+            <Label fx:id="monthlySpendLabel" text="\$0.00" styleClass="card-value"/>
             <Label text="- 1.1% vs last month"/>
-<!--                   />-->
         </VBox>
         <VBox styleClass="card" spacing="6" style="-fx-font-size: 14px;">
             <Label text="Active Accounts" styleClass="card-title"/>
-            <Label text="1" styleClass="card-value"/>
-            <Label text="1 checking • 0 savings"
-                   />
-
+            <Label fx:id="activeAccountsLabel" text="1" styleClass="card-value"/>
+            <Label text="1 checking • 0 savings" wrapText="true"/>
         </VBox>
     </HBox>
 
     <HBox spacing="18">
-        <VBox styleClass="card" prefWidth="420" prefHeight="220" spacing="10">
+        <VBox styleClass="card" prefWidth="420" prefHeight="220" spacing="10" HBox.hgrow="ALWAYS">
             <Label text="Account Growth" styleClass="card-title"/>
             <StackPane fx:id="growthChart"
                        prefHeight="140"
@@ -59,7 +54,11 @@
         </VBox>
     </HBox>
 
-    <!-- Banking Suggestions Ticker -->
+    <VBox styleClass="card" spacing="10" maxWidth="Infinity">
+        <Label text="Recent activity" styleClass="card-title"/>
+        <VBox fx:id="recentActivityContainer" spacing="6"/>
+    </VBox>
+
     <HBox fx:id="tickerContainer" 
           alignment="CENTER_LEFT" 
           styleClass="ticker-container"

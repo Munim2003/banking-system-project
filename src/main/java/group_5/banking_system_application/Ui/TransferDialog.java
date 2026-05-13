@@ -1,10 +1,13 @@
 package group_5.banking_system_application.Ui;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.cloud.FirestoreClient;
 import group_5.banking_system_application.Application;
 import javafx.animation.FadeTransition;
@@ -26,13 +29,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public final class TransferDialog {
+
+    public static final String USER_TRANSACTIONS_SUBCOLLECTION = "transactions";
 
     private static Node lastAnchor = null;
     private static final Firestore db = FirestoreClient.getFirestore();
@@ -43,12 +48,10 @@ public final class TransferDialog {
         lastAnchor = anyNode;
     }
 
-    // basic show, without callback
     public static void show(String currentUserId) {
         show(currentUserId, null);
     }
 
-    // show with callback (e.g. refresh table)
     public static void show(String currentUserId, Runnable onSuccess) {
         if (lastAnchor == null) {
             System.err.println("transferDialog.initialize() must be called first!");
@@ -59,6 +62,10 @@ public final class TransferDialog {
 
     public static void showWithAnchor(Node anchor, String currentUserId, Runnable onSuccess) {
         showInternal(anchor, currentUserId, onSuccess);
+    }
+
+    private static Map<String, Object> balanceUpdate(double newBalance) {
+        return Map.of("balance", newBalance);
     }
 
     private static void showInternal(Node anchor, String currentUserId, Runnable onSuccess) {
@@ -75,7 +82,6 @@ public final class TransferDialog {
             overlayRoot.setStyle("-fx-background-color: rgba(12, 8, 24, 0.55);");
             overlayRoot.setAlignment(Pos.CENTER);
 
-            // ---------- CARD ----------
             VBox card = new VBox(12);
             card.setAlignment(Pos.CENTER_LEFT);
             card.setPadding(new Insets(18, 22, 18, 22));
@@ -90,7 +96,6 @@ public final class TransferDialog {
                             "-fx-effect: dropshadow(gaussian, rgba(108,92,231,0.25), 22, 0.3, 0, 6);"
             );
 
-            // ---------- TITLE ----------
             Label titleLabel = new Label("Transfer funds");
             titleLabel.setStyle(
                     "-fx-font-size: 18px;" +
@@ -105,8 +110,7 @@ public final class TransferDialog {
                             "-fx-text-fill: #B8B9C2;"
             );
 
-            // ---------- FORM FIELD ----------
-            Label emailLabel = new Label("user Email");
+            Label emailLabel = new Label("Recipient email");
             emailLabel.setStyle(
                     "-fx-font-size: 13px;" +
                             "-fx-text-fill: #D3D4DD;"
@@ -125,9 +129,15 @@ public final class TransferDialog {
                             "-fx-padding: 8 10;"
             );
             emailField.setPrefWidth(280);
-            // new stuff for balance transfer
+
+            Label amountLabel = new Label("Amount");
+            amountLabel.setStyle(
+                    "-fx-font-size: 13px;" +
+                            "-fx-text-fill: #D3D4DD;"
+            );
+
             TextField amountField = new TextField();
-            amountField.setPromptText("1000.0");
+            amountField.setPromptText("0.00");
             amountField.setStyle(
                     "-fx-background-color: #120C25;" +
                             "-fx-text-fill: #F5F6FA;" +
@@ -138,11 +148,11 @@ public final class TransferDialog {
                             "-fx-border-width: 1;" +
                             "-fx-padding: 8 10;"
             );
-        // end new stuff
+
             Label errorLabel = new Label();
             errorLabel.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 12px;");
+            errorLabel.setWrapText(true);
 
-            // ---------- BUTTONS ----------
             Button cancelBtn = new Button("Cancel");
             cancelBtn.setStyle(
                     "-fx-background-color: transparent;" +
@@ -176,9 +186,9 @@ public final class TransferDialog {
                     )
             );
 
-            Button addBtn = new Button("Add");
-            addBtn.setPrefWidth(110);
-            addBtn.setStyle(
+            Button sendBtn = new Button("Send");
+            sendBtn.setPrefWidth(110);
+            sendBtn.setStyle(
                     "-fx-background-color: #6C5CE7;" +
                             "-fx-text-fill: white;" +
                             "-fx-font-size: 13px;" +
@@ -187,8 +197,8 @@ public final class TransferDialog {
                             "-fx-background-radius: 10;" +
                             "-fx-cursor: hand;"
             );
-            addBtn.setOnMouseEntered(e ->
-                    addBtn.setStyle(
+            sendBtn.setOnMouseEntered(e ->
+                    sendBtn.setStyle(
                             "-fx-background-color: #7A6CF1;" +
                                     "-fx-text-fill: white;" +
                                     "-fx-font-size: 13px;" +
@@ -198,8 +208,8 @@ public final class TransferDialog {
                                     "-fx-cursor: hand;"
                     )
             );
-            addBtn.setOnMouseExited(e ->
-                    addBtn.setStyle(
+            sendBtn.setOnMouseExited(e ->
+                    sendBtn.setStyle(
                             "-fx-background-color: #6C5CE7;" +
                                     "-fx-text-fill: white;" +
                                     "-fx-font-size: 13px;" +
@@ -210,15 +220,15 @@ public final class TransferDialog {
                     )
             );
 
-            HBox buttonsRow = new HBox(10, cancelBtn, addBtn);
+            HBox buttonsRow = new HBox(10, cancelBtn, sendBtn);
             buttonsRow.setAlignment(Pos.CENTER_RIGHT);
 
-            // assemble card
             card.getChildren().addAll(
                     titleLabel,
                     subtitle,
                     emailLabel,
                     emailField,
+                    amountLabel,
                     amountField,
                     errorLabel,
                     buttonsRow
@@ -238,145 +248,169 @@ public final class TransferDialog {
 
             cancelBtn.setOnAction(e -> closeAction.run());
 
-            // NOTE: yahan overlay pe click se close NAAHIN kar raha,
-            // taki galti se click karke form band na ho.
-            // agar chaho to NotificationDialog jaisa behavior add kar sakte ho.
-
-            // ---------- ADD BUTTON ACTION ----------
-            addBtn.setOnAction(e -> {
-                String email = emailField.getText().trim();
+            sendBtn.setOnAction(e -> {
+                String recipientEmail = emailField.getText().trim();
                 errorLabel.setText("");
 
-                if (email.isEmpty()) {
-                    errorLabel.setText("Please enter user email.");
+                if (recipientEmail.isEmpty()) {
+                    errorLabel.setText("Please enter the recipient email.");
                     NotificationDialog.shake(emailField);
                     return;
                 }
 
-                if(email.equals(LoginController.globalUserEmail)) {
-                    errorLabel.setText("you cannot give money to yourself silly!");
+                if (recipientEmail.equalsIgnoreCase(LoginController.globalUserEmail)) {
+                    errorLabel.setText("You cannot transfer money to yourself.");
                     NotificationDialog.shake(emailField);
                     return;
                 }
 
-                // background thread for Firestore
-                addBtn.setDisable(true);
+                String amountRaw = amountField.getText().trim();
+                if (amountRaw.isEmpty()) {
+                    errorLabel.setText("Please enter an amount.");
+                    NotificationDialog.shake(amountField);
+                    return;
+                }
+
+                final double sendAmount;
+                try {
+                    sendAmount = Double.parseDouble(amountRaw);
+                } catch (NumberFormatException ex) {
+                    errorLabel.setText("Amount must be a valid number.");
+                    NotificationDialog.shake(amountField);
+                    return;
+                }
+
+                if (sendAmount <= 0) {
+                    errorLabel.setText("Amount must be greater than zero.");
+                    NotificationDialog.shake(amountField);
+                    return;
+                }
+
+                sendBtn.setDisable(true);
                 cancelBtn.setDisable(true);
-                errorLabel.setText("Checking user...");
+                errorLabel.setText("Processing transfer…");
 
-              //  new Thread(() -> {
+                new Thread(() -> {
                     try {
-                        //----
-                        ApiFuture<QuerySnapshot> future =
+                        ApiFuture<QuerySnapshot> receiverFuture =
                                 db.collection("users")
-                                        .whereEqualTo("email", email)
+                                        .whereEqualTo("email", recipientEmail)
+                                        .limit(1)
                                         .get();
 
-                        List<QueryDocumentSnapshot> docs = future.get().getDocuments();
-
-                        if (docs.isEmpty()) {
+                        List<QueryDocumentSnapshot> receiverDocs = receiverFuture.get().getDocuments();
+                        if (receiverDocs.isEmpty()) {
                             Platform.runLater(() -> {
                                 errorLabel.setText("No user found with this email.");
-                                addBtn.setDisable(false);
+                                sendBtn.setDisable(false);
                                 cancelBtn.setDisable(false);
                                 NotificationDialog.shake(emailField);
                             });
                             return;
                         }
 
-                        // new code for transfer balances
-
-                        ApiFuture<QuerySnapshot> userFuture =
+                        ApiFuture<QuerySnapshot> senderFuture =
                                 db.collection("users")
                                         .whereEqualTo("email", LoginController.globalUserEmail)
+                                        .limit(1)
                                         .get();
 
-                        List<QueryDocumentSnapshot> userDoc = userFuture.get().getDocuments();
-                        var userQuery = userDoc.getFirst();
-                        var recieverQuery = docs.getFirst();
-                        double sendAmount;
-                        try {
-                            sendAmount = Double.parseDouble(amountField.getText());
-                        }catch(InputMismatchException inputException) {
-                            errorLabel.setText("input must be valid number");
-                            NotificationDialog.shake(emailField);
+                        List<QueryDocumentSnapshot> senderDocs = senderFuture.get().getDocuments();
+                        if (senderDocs.isEmpty()) {
+                            Platform.runLater(() -> {
+                                errorLabel.setText("Signed-in user not found. Please log in again.");
+                                sendBtn.setDisable(false);
+                                cancelBtn.setDisable(false);
+                            });
                             return;
-
                         }
 
-                        Number senderFirebaseNum = (Number)userQuery.get("balance");
-                        double oldSenderBalance = senderFirebaseNum.doubleValue();
-                        System.out.println(oldSenderBalance);
-                        System.out.println(email);
-                        System.out.println((Number)recieverQuery.get("balance"));
-                        double newSenderBalance = oldSenderBalance-sendAmount;
-                        Number recieverFirebaseNum = (Number)recieverQuery.get("balance");
-                        double newRecieverBalance = recieverFirebaseNum.doubleValue() +sendAmount;
+                        QueryDocumentSnapshot senderSnap = senderDocs.getFirst();
+                        QueryDocumentSnapshot receiverSnap = receiverDocs.getFirst();
 
-                        // now to update both sender and reciever
-                        {
-                            DocumentReference docRef = Application.firestore.collection("users").document((String) userQuery.get("userID"));
-                            var map = new HashMap<String, Object>();
-                            map.put("userID", userQuery.get("userID")); // to access user more easily
-                            map.put("firstName", userQuery.get("firstName"));
-                            map.put("lastName", userQuery.get("lastName"));
-                            map.put("email", userQuery.get("email"));
-                            map.put("hashedPassword", userQuery.get("hashedPassword"));
-                            var benArray = new ArrayList<String>();
-                            if (userQuery.get("beneficiaries") != null) {
-                                for (var i : (ArrayList<String>) userQuery.get("beneficiaries")) {
-                                    benArray.add(i);
-                                }
-                            }
-                            map.put("beneficiaries", benArray);
-                            map.put("balance", newSenderBalance);
-                            docRef.set(map).get();
+                        double oldSender = FirestoreMoney.toDouble(senderSnap.get("balance"));
+                        double oldReceiver = FirestoreMoney.toDouble(receiverSnap.get("balance"));
+
+                        if (oldSender < sendAmount) {
+                            Platform.runLater(() -> {
+                                errorLabel.setText("Insufficient balance.");
+                                sendBtn.setDisable(false);
+                                cancelBtn.setDisable(false);
+                                NotificationDialog.shake(amountField);
+                            });
+                            return;
                         }
-                        //update reciever
-                        {
-                            DocumentReference docRef = Application.firestore.collection("users").document((String)recieverQuery.get("userID"));
-                            var map = new HashMap<String, Object>();
-                            map.put("userID",recieverQuery.get("userID") ); // to access user more easily
-                            map.put("firstName", recieverQuery.get("firstName"));
-                            map.put("lastName", recieverQuery.get("lastName"));
-                            map.put("email", recieverQuery.get("email"));
-                            map.put("hashedPassword", recieverQuery.get("hashedPassword"));
-                            var benArray = new ArrayList<String>();
-                            if(userQuery.get("beneficiaries") != null) {
-                                for (var i : (ArrayList<String>) recieverQuery.get("beneficiaries")) {
-                                    benArray.add(i);
-                                }
-                            }
-                            map.put("beneficiaries",benArray);
-                            map.put("balance",newRecieverBalance);
-                            docRef.set(map).get();
+
+                        double newSenderBalance = oldSender - sendAmount;
+                        double newReceiverBalance = oldReceiver + sendAmount;
+
+                        String senderUid = senderSnap.getString("userID");
+                        if (senderUid == null || senderUid.isBlank()) {
+                            senderUid = senderSnap.getId();
                         }
+                        String receiverUid = receiverSnap.getString("userID");
+                        if (receiverUid == null || receiverUid.isBlank()) {
+                            receiverUid = receiverSnap.getId();
+                        }
+
+                        String senderEmail = senderSnap.getString("email");
+                        String txId = UUID.randomUUID().toString();
+                        Timestamp now = Timestamp.now();
+
+                        DocumentReference senderRef = Application.firestore.collection("users").document(senderUid);
+                        DocumentReference receiverRef = Application.firestore.collection("users").document(receiverUid);
+                        DocumentReference outTx = senderRef.collection(USER_TRANSACTIONS_SUBCOLLECTION).document(txId);
+                        DocumentReference inTx = receiverRef.collection(USER_TRANSACTIONS_SUBCOLLECTION).document(txId);
+
+                        Map<String, Object> outRecord = new HashMap<>();
+                        outRecord.put("amount", sendAmount);
+                        outRecord.put("flow", Transactions.FLOW_OUT);
+                        outRecord.put("counterpartyEmail", recipientEmail);
+                        outRecord.put("balanceAfter", newSenderBalance);
+                        outRecord.put("createdAt", now);
+                        outRecord.put("status", "Completed");
+                        outRecord.put("description", "Transfer to " + recipientEmail);
+
+                        Map<String, Object> inRecord = new HashMap<>();
+                        inRecord.put("amount", sendAmount);
+                        inRecord.put("flow", Transactions.FLOW_IN);
+                        inRecord.put("counterpartyEmail", senderEmail != null ? senderEmail : "");
+                        inRecord.put("balanceAfter", newReceiverBalance);
+                        inRecord.put("createdAt", now);
+                        inRecord.put("status", "Completed");
+                        inRecord.put("description", "Transfer from " + (senderEmail != null ? senderEmail : "Vaultiq user"));
+
+                        WriteBatch batch = db.batch();
+                        batch.set(senderRef, balanceUpdate(newSenderBalance), SetOptions.merge());
+                        batch.set(receiverRef, balanceUpdate(newReceiverBalance), SetOptions.merge());
+                        batch.set(outTx, outRecord);
+                        batch.set(inTx, inRecord);
+                        batch.commit().get();
 
                         Platform.runLater(() -> {
-                           // closeAction.run();
                             if (onSuccess != null) {
-                                onSuccess.run();    // e.g. table refresh
+                                onSuccess.run();
                             }
-                            NotificationDialog.show("success","Transfer made successfully.",true);
-                            addBtn.setDisable(false);
+                            NotificationDialog.show("Success", "Transfer completed.", true);
+                            sendBtn.setDisable(false);
                             cancelBtn.setDisable(false);
                             errorLabel.setText("");
-                            //NotificationDialog.showWithAnchor(lastAnchor,"Success!","Login Successful !", true);
-
+                            emailField.clear();
+                            amountField.clear();
+                            closeAction.run();
                         });
 
                     } catch (InterruptedException | ExecutionException ex) {
                         ex.printStackTrace();
                         Platform.runLater(() -> {
-                            errorLabel.setText("Something went wrong. Please try again.");
-                            addBtn.setDisable(false);
+                            errorLabel.setText("Transfer failed. Please try again.");
+                            sendBtn.setDisable(false);
                             cancelBtn.setDisable(false);
                         });
                     }
-               // }).start();
+                }).start();
             });
 
-            // ---------- entrance animation ----------
             Platform.runLater(() -> {
                 overlayRoot.applyCss();
                 overlayRoot.layout();
@@ -424,4 +458,3 @@ public final class TransferDialog {
         exit.play();
     }
 }
-

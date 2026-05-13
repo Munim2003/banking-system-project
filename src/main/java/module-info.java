@@ -4,6 +4,7 @@ module group_5.banking_system_application {
     requires java.desktop;
     requires javafx.graphics;
     requires javafx.base;
+    requires java.sql;
 
     requires firebase.admin;
     requires com.google.auth;

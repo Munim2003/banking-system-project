@@ -171,6 +171,20 @@
       -fx-fill: #ffffff;
   }
 
+  .nav-logout {
+      -fx-border-color: rgba(248, 113, 113, 0.35);
+      -fx-border-radius: 10;
+      -fx-border-width: 1;
+  }
+
+  .nav-logout:hover {
+      -fx-background-color: rgba(248, 113, 113, 0.12);
+  }
+
+  .dashboard-welcome {
+      -fx-wrap-text: true;
+  }
+
   /* Generic dashboard card */
   .card {
       -fx-background-color: linear-gradient(to bottom, #221041, #140927);

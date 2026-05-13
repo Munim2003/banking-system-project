@@ -1,18 +1,19 @@
 package group_5.banking_system_application.Ui;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -20,16 +21,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class DashboardController {
 
     private static final Firestore db = FirestoreClient.getFirestore();
-    @FXML
-    private Button bAccounts;
-
-    @FXML
-    private Button bOpen;
 
     @FXML
     private StackPane growthChart;
@@ -43,83 +46,202 @@ public class DashboardController {
     @FXML
     private Label tickerLabel;
 
-    // bottom navbar tip label (purple card)
     @FXML
     private Label navSuggestionLabel;
 
-    // --- Ticker fields (center card) ---
+    @FXML
+    private Label welcomeLabel;
+
+    @FXML
+    private Label totalBalanceLabel;
+
+    @FXML
+    private Label monthlySpendLabel;
+
+    @FXML
+    private Label activeAccountsLabel;
+
+    @FXML
+    private VBox recentActivityContainer;
+
     private List<String> tickerSuggestions;
     private Timeline tickerTimeline;
     private int currentTickerIndex = 0;
 
-    // --- Nav-tip fields (bottom of sidebar) ---
     private List<String> navSuggestions;
     private int navSuggestionIndex = 0;
     private SequentialTransition navSuggestionTransition;
 
-    private String currentUserId; // login ke baad set hota hai
+    private String currentUserId;
+
+    private LineChart<String, Number> balanceChart;
+    private final SimpleDateFormat chartDayFormat = new SimpleDateFormat("MMM d", Locale.US);
+    private final SimpleDateFormat activityFormat = new SimpleDateFormat("MMM d, HH:mm", Locale.US);
 
     @FXML
     public void initialize() {
-        // Dynamic welcome message
-        for (var c1 : root.getChildren()) {
-            if (c1 instanceof HBox) {
-                for (var c2 : ((HBox) c1).getChildren()) {
-                    if (c2 instanceof Label) {
-                        if (((Label) c2).getText().equals("Welcome back, Munim")) {
-                            ((Label) c2).setText("Welcome back, " + LoginController.userName);
-                        }
-                    } else if (c2 instanceof VBox) {
-                        for (var c3 : ((VBox) c2).getChildren()) {
-                            if (c3 instanceof Label) {
-                                System.out.println(((Label) c3).getText());
-
-                                if (((Label) c3).getText().equals("$18,920.52")) {
-                                    System.out.println("lol it equals number");
-                                    ApiFuture<QuerySnapshot> userFuture =
-                                            db.collection("users")
-                                                    .whereEqualTo("email", LoginController.globalUserEmail)
-                                                    .get();
-
-
-                                    try {
-                                        List<QueryDocumentSnapshot> userDoc = userFuture.get().getDocuments();
-                                        var userQuery = userDoc.getFirst();
-                                        ((Label) c3).setText(((Number) userQuery.get("balance")) + "");
-                                    } catch (Exception except) {
-
-                                    }
-                                    break;
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-            }
+        if (welcomeLabel != null) {
+            welcomeLabel.setText("Welcome back, " + LoginController.userName);
+            welcomeLabel.setWrapText(true);
+            welcomeLabel.maxWidthProperty().bind(root.widthProperty());
+        }
+        if (activeAccountsLabel != null) {
+            activeAccountsLabel.setText("1");
         }
 
-        // Chart setup
-        LineChart<String, Number> chart = createGrowthChart();
-        chart.setMinSize(0, 0);
-        chart.prefWidthProperty().bind(growthChart.widthProperty());
-        chart.prefHeightProperty().bind(growthChart.heightProperty());
-        growthChart.getChildren().add(chart);
+        balanceChart = createEmptyGrowthChart();
+        balanceChart.setMinSize(0, 0);
+        balanceChart.prefWidthProperty().bind(growthChart.widthProperty());
+        balanceChart.prefHeightProperty().bind(growthChart.heightProperty());
+        growthChart.getChildren().add(balanceChart);
 
-        // Dialog initializations
         NotificationDialog.initialize(root);
         AddBeneficiaryDialog.initialize(root);
         TransferDialog.initialize(root);
 
-        // Ticker + nav tip
         initializeTicker();
         initializeNavSuggestion();
+
+        refreshDashboardFromFirestore();
     }
 
-    // ========================================================================
-    // TICKER (middle of dashboard) – one full message at a time, scrolling
-    // ========================================================================
+    private LineChart<String, Number> createEmptyGrowthChart() {
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        LineChart<String, Number> chart = new LineChart<>(xAxis, yAxis);
+        chart.setLegendVisible(false);
+        chart.setAnimated(false);
+        chart.setHorizontalGridLinesVisible(false);
+        chart.setVerticalGridLinesVisible(false);
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.getData().add(new XYChart.Data<>("—", 0));
+        chart.getData().add(series);
+        return chart;
+    }
+
+    public void refreshDashboardFromFirestore() {
+        String uid = LoginController.globalUserId;
+        if (uid == null || uid.isBlank()) {
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                DocumentSnapshot user = db.collection("users").document(uid).get().get();
+                double balance = FirestoreMoney.toDouble(user.get("balance"));
+
+                ApiFuture<com.google.cloud.firestore.QuerySnapshot> txFuture =
+                        db.collection("users")
+                                .document(uid)
+                                .collection(TransferDialog.USER_TRANSACTIONS_SUBCOLLECTION)
+                                .orderBy("createdAt", Query.Direction.DESCENDING)
+                                .limit(120)
+                                .get();
+
+                List<QueryDocumentSnapshot> txDocs = new ArrayList<>(txFuture.get().getDocuments());
+
+                double monthSpend = computeMonthOutgoingSpend(txDocs);
+
+                List<QueryDocumentSnapshot> forChart = new ArrayList<>(txDocs);
+                forChart.sort(Comparator.comparing(d -> FirestoreMoney.toDate(d, "createdAt")));
+
+                List<Transactions> recentRows = new ArrayList<>();
+                for (int i = 0; i < Math.min(5, txDocs.size()); i++) {
+                    recentRows.add(Transactions.fromFirestore(txDocs.get(i)));
+                }
+
+                final String displayName = LoginController.deriveDisplayName(user);
+
+                Platform.runLater(() -> {
+                    LoginController.userName = displayName;
+                    if (welcomeLabel != null) {
+                        welcomeLabel.setText("Welcome back, " + displayName);
+                    }
+                    totalBalanceLabel.setText(String.format(Locale.US, "$%,.2f", balance));
+                    monthlySpendLabel.setText(String.format(Locale.US, "$%,.2f", monthSpend));
+                    rebuildChart(forChart, balance);
+                    rebuildRecentActivity(recentRows);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private double computeMonthOutgoingSpend(List<QueryDocumentSnapshot> txDocs) {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        int y = now.getYear();
+        int m = now.getMonthValue();
+        double sum = 0;
+        for (QueryDocumentSnapshot d : txDocs) {
+            if (!Transactions.FLOW_OUT.equals(d.getString("flow"))) {
+                continue;
+            }
+            Instant inst = FirestoreMoney.toDate(d, "createdAt").toInstant();
+            ZonedDateTime z = inst.atZone(ZoneId.systemDefault());
+            if (z.getYear() == y && z.getMonthValue() == m) {
+                sum += FirestoreMoney.toDouble(d.get("amount"));
+            }
+        }
+        return sum;
+    }
+
+    private void rebuildChart(List<QueryDocumentSnapshot> chronological, double currentBalance) {
+        XYChart.Series<String, Number> series = balanceChart.getData().getFirst();
+        series.getData().clear();
+
+        if (chronological.isEmpty()) {
+            series.getData().add(new XYChart.Data<>("Today", currentBalance));
+            return;
+        }
+
+        int maxPoints = 12;
+        int from = Math.max(0, chronological.size() - maxPoints);
+        for (int i = from; i < chronological.size(); i++) {
+            QueryDocumentSnapshot d = chronological.get(i);
+            String day = chartDayFormat.format(FirestoreMoney.toDate(d, "createdAt"));
+            double bal = FirestoreMoney.toDouble(d.get("balanceAfter"));
+            series.getData().add(new XYChart.Data<>(day, bal));
+        }
+        if (series.getData().isEmpty()) {
+            series.getData().add(new XYChart.Data<>("Today", currentBalance));
+        }
+    }
+
+    private void rebuildRecentActivity(List<Transactions> rows) {
+        recentActivityContainer.getChildren().clear();
+        if (rows.isEmpty()) {
+            Label empty = new Label("No transactions yet. Use Transfer funds to move money between Vaultiq accounts.");
+            empty.setWrapText(true);
+            empty.setStyle("-fx-text-fill: #B8B9C2; -fx-font-size: 13px;");
+            recentActivityContainer.getChildren().add(empty);
+            return;
+        }
+        for (Transactions t : rows) {
+            HBox row = new HBox(10);
+            row.setAlignment(Pos.CENTER_LEFT);
+
+            Label when = new Label(activityFormat.format(t.getDate()));
+            when.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 12px;");
+            when.setMinWidth(130);
+
+            Label desc = new Label(t.getDescription());
+            desc.setStyle("-fx-text-fill: #E5E7EB; -fx-font-size: 13px;");
+            desc.setWrapText(true);
+            HBox.setHgrow(desc, javafx.scene.layout.Priority.ALWAYS);
+
+            String sign = Transactions.FLOW_IN.equals(t.getFlow()) ? "+" : "-";
+            Label amt = new Label(sign + String.format(Locale.US, "$%.2f", t.getAmount()));
+            boolean in = Transactions.FLOW_IN.equals(t.getFlow());
+            amt.setStyle(in
+                    ? "-fx-text-fill: #34D399; -fx-font-weight: 700; -fx-font-size: 13px;"
+                    : "-fx-text-fill: #F87171; -fx-font-weight: 700; -fx-font-size: 13px;");
+
+            row.getChildren().addAll(when, desc, amt);
+            recentActivityContainer.getChildren().add(row);
+        }
+    }
+
     private void initializeTicker() {
         if (tickerLabel == null || tickerContainer == null) {
             return;
@@ -133,13 +255,11 @@ public class DashboardController {
             tickerLabel.setText(tickerSuggestions.get(0));
         }
 
-        // Clip overflow so text stays inside the purple bar
         Rectangle clip = new Rectangle();
         clip.widthProperty().bind(tickerContainer.widthProperty());
         clip.heightProperty().bind(tickerContainer.heightProperty());
         tickerContainer.setClip(clip);
 
-        // Start loop once scene is attached
         tickerContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 Platform.runLater(this::startTickerLoop);
@@ -192,7 +312,7 @@ public class DashboardController {
             double endX = -textWidth - gap;
             double distance = startX - endX;
 
-            double pixelsPerSecond = 100.0; // speed
+            double pixelsPerSecond = 100.0;
             double durationSeconds = distance / pixelsPerSecond;
 
             tickerLabel.setTranslateX(startX);
@@ -213,16 +333,11 @@ public class DashboardController {
         });
     }
 
-    // ========================================================================
-    // NAVBAR BOTTOM TIP – fades in/out and cycles suggestions
-    // ========================================================================
     private void initializeNavSuggestion() {
         if (navSuggestionLabel == null) {
-            // maybe sidebar is a different FXML, then this is simply unused
             return;
         }
 
-        // use same file / messages
         navSuggestions = BankingSuggestionService.getShuffledSuggestions();
 
         if (navSuggestions == null || navSuggestions.isEmpty()) {
@@ -246,7 +361,6 @@ public class DashboardController {
             return;
         }
 
-        // Stop any running transition
         if (navSuggestionTransition != null) {
             navSuggestionTransition.stop();
         }
@@ -256,12 +370,11 @@ public class DashboardController {
 
         navSuggestionLabel.setText(message);
 
-        // Fade in → stay → fade out → then call this again
         FadeTransition fadeIn = new FadeTransition(Duration.millis(400), navSuggestionLabel);
         fadeIn.setFromValue(0.0);
         fadeIn.setToValue(1.0);
 
-        PauseTransition stay = new PauseTransition(Duration.seconds(6)); // visible time
+        PauseTransition stay = new PauseTransition(Duration.seconds(6));
 
         FadeTransition fadeOut = new FadeTransition(Duration.millis(400), navSuggestionLabel);
         fadeOut.setFromValue(1.0);
@@ -272,47 +385,19 @@ public class DashboardController {
         navSuggestionTransition.play();
     }
 
-    // ========================================================================
-    // Existing chart + other logic
-    // ========================================================================
-    private LineChart<String, Number> createGrowthChart() {
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-
-        LineChart<String, Number> chart = new LineChart<>(xAxis, yAxis);
-        chart.setLegendVisible(false);
-        chart.setAnimated(false);
-        chart.setHorizontalGridLinesVisible(false);
-        chart.setVerticalGridLinesVisible(false);
-
-        XYChart.Series<String, Number> data = new XYChart.Series<>();
-        data.getData().add(new XYChart.Data<>("Today", 4));
-        data.getData().add(new XYChart.Data<>("Apr 22", 8));
-        data.getData().add(new XYChart.Data<>("Apr", 6));
-        data.getData().add(new XYChart.Data<>("Apr 21", 10));
-        data.getData().add(new XYChart.Data<>("Apr", 14));
-
-        chart.getData().add(data);
-        return chart;
-    }
-
     public void setCurrentUserId(String userId) {
         this.currentUserId = userId;
     }
 
     @FXML
     private void onAddBeneficiaryClicked() {
-        AddBeneficiaryDialog.show(currentUserId, this::reloadBeneficiariesOnDashboard);
+        String uid = currentUserId != null ? currentUserId : LoginController.globalUserId;
+        AddBeneficiaryDialog.show(uid, this::refreshDashboardFromFirestore);
     }
+
     @FXML
     private void onTransferClicked() {
-        TransferDialog.show(currentUserId, this::reloadBeneficiariesOnDashboard);
-
-
-
-    }
-
-    private void reloadBeneficiariesOnDashboard() {
-        // Firestore se beneficiaries list fetch karo aur dashboard pe show/update karo
+        String uid = currentUserId != null ? currentUserId : LoginController.globalUserId;
+        TransferDialog.show(uid, this::refreshDashboardFromFirestore);
     }
 }

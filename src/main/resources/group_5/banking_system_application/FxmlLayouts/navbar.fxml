@@ -69,6 +69,8 @@
         Beneficiaries
     </Button>
 
+    <Button fx:id="btnLogout" onAction="#handleLogout" styleClass="nav-item nav-logout" text="Log out" />
+
     <!-- Vertical Scrolling Ticker for Navbar -->
     <VBox VBox.vgrow="ALWAYS" alignment="BOTTOM_CENTER" spacing="0">
         <StackPane fx:id="navbarTickerContainer" 

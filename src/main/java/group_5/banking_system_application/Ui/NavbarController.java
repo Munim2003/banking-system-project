@@ -1,16 +1,22 @@
 package group_5.banking_system_application.Ui;
 
+import group_5.banking_system_application.Application;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.List;
 
 public class NavbarController {
@@ -25,6 +31,9 @@ public class NavbarController {
     private Button btnAnalytics;
     @FXML
     private Button btnBeneficiaries;
+
+    @FXML
+    private Button btnLogout;
 
     @FXML
     private StackPane navbarTickerContainer;
@@ -92,6 +101,22 @@ public class NavbarController {
             mainPageController.setPage("/group_5/banking_system_application/FxmlLayouts/Beneficiaries.fxml");
             setActiveButton(btnBeneficiaries);
         }
+    }
+
+    @FXML
+    public void handleLogout(ActionEvent event) throws IOException {
+        LoginController.clearSession();
+        Parent loginRoot = FXMLLoader.load(
+                getClass().getResource("/group_5/banking_system_application/FxmlLayouts/login-page.fxml"));
+        Scene scene = btnLogout.getScene();
+        scene.setRoot(loginRoot);
+        String css = Application.class
+                .getResource("/group_5/banking_system_application/Styles/style.css")
+                .toExternalForm();
+        scene.getStylesheets().setAll(css);
+        Stage stage = (Stage) scene.getWindow();
+        stage.setTitle("Vaultiq");
+        stage.show();
     }
 
     @FXML
